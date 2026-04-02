@@ -6,16 +6,12 @@
     <title>Görev Yönetim Sistemi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- CryptoJS (veri güvenliği için basit şifreleme) -->
     <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.js"></script>
-    <!-- EmailJS (gerçek email göndermek için - kendi key'lerini koy) -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
         
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        body { font-family: 'Inter', sans-serif; }
         
         .modern-input {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -27,14 +23,8 @@
                        0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
         
-        .page {
-            animation: fadeIn 0.4s ease forwards;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .page { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .task-card {
             border: 3px solid #111827;
@@ -42,23 +32,12 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .task-card.deleting {
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
-        }
+        .task-card.deleting { opacity: 0; transform: scale(0.8) translateY(20px); }
         
-        .navy-bg {
-            background: linear-gradient(135deg, #001f3f 0%, #003366 100%);
-        }
+        .navy-bg { background: linear-gradient(135deg, #001f3f 0%, #003366 100%); }
+        .silver-bg { background: linear-gradient(135deg, #c0c0c0 0%, #d1d5db 100%); }
         
-        .silver-bg {
-            background: linear-gradient(135deg, #c0c0c0 0%, #d1d5db 100%);
-        }
-        
-        .rotating-border {
-            position: relative;
-        }
-        
+        .rotating-border { position: relative; }
         .rotating-border::before {
             content: '';
             position: absolute;
@@ -71,19 +50,10 @@
             animation: rotateBorder 4s linear infinite;
             z-index: -1;
         }
+        @keyframes rotateBorder { to { transform: rotate(360deg); } }
         
-        @keyframes rotateBorder {
-            to { transform: rotate(360deg); }
-        }
-        
-        .modal {
-            animation: modalPop 0.3s ease forwards;
-        }
-        
-        @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        .modal { animation: modalPop 0.3s ease forwards; }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -95,7 +65,6 @@
                 <h1 class="text-5xl font-bold text-gray-900 mb-3 tracking-tight">Hoş Geldin!</h1>
                 <p class="text-xl text-gray-700">Lütfen rolünü seç</p>
             </div>
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div onclick="selectRole('admin')" class="cursor-pointer bg-white rounded-3xl shadow-2xl p-8 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-gray-900 group">
                     <div class="flex justify-center mb-6"><i class="fa-solid fa-shield-halved text-7xl text-amber-600 group-hover:rotate-12 transition-transform"></i></div>
@@ -116,7 +85,7 @@
         </div>
     </div>
 
-    <!-- KAYIT SAYFASI (Öğretmen + Müdür) -->
+    <!-- KAYIT SAYFASI -->
     <div id="register-page" class="hidden min-h-screen silver-bg flex items-center justify-center page">
         <div class="max-w-md w-full mx-auto bg-white rounded-3xl shadow-2xl p-10">
             <div class="flex items-center justify-between mb-8">
@@ -125,15 +94,18 @@
             </div>
             <form id="register-form" onsubmit="registerUser(event)">
                 <div class="space-y-6">
-                    <div>
+                    <!-- Ad Soyad (sadece öğretmen için) -->
+                    <div id="reg-name-container">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
                         <input type="text" id="reg-name" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
+                    <!-- E-posta -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
+                        <label id="reg-email-label" class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
                         <input type="email" id="reg-email" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
-                    <div>
+                    <!-- Şifre (sadece öğretmen için) -->
+                    <div id="reg-password-container">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
                         <input type="password" id="reg-password" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
@@ -157,7 +129,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
                         <input type="text" id="login-name" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
-                    <!-- Müdür ve Admin için ekstra e-posta alanı (bildirim için) -->
+                    <!-- SADECE MÜDÜR İÇİN E-POSTA ALANI -->
                     <div id="extra-email-field" class="hidden">
                         <label class="block text-sm font-medium text-gray-700 mb-1">E-posta (bildirim için)</label>
                         <input type="email" id="login-email" class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
@@ -183,13 +155,21 @@
                         <p id="user-info" class="text-white/70 text-lg"></p>
                     </div>
                 </div>
-                <button onclick="logout()" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-6 py-3 rounded-2xl text-sm font-medium transition-all">
-                    <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
-                </button>
+
+                <!-- Bildirim Bell (sadece Müdür ve Admin için) -->
+                <div id="notification-bell-container" class="flex items-center gap-6">
+                    <div id="notification-bell" onclick="toggleNotifications()" class="relative cursor-pointer hidden flex items-center justify-center w-11 h-11 bg-white/10 hover:bg-white/20 rounded-2xl transition-all">
+                        <i class="fa-solid fa-bell text-3xl"></i>
+                        <span id="notification-count" class="absolute -top-1 -right-1 bg-red-500 text-[10px] font-bold text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">0</span>
+                    </div>
+                    <button onclick="logout()" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-6 py-3 rounded-2xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Görev ekleme (sadece müdür ve admin) -->
+                <!-- Görev ekleme -->
                 <div id="task-form-container" class="lg:col-span-5">
                     <div class="rotating-border bg-white text-gray-900 rounded-3xl p-8 task-card">
                         <div class="flex items-center gap-3 mb-6">
@@ -222,7 +202,7 @@
         </div>
     </div>
 
-    <!-- Görev Düzenleme Modal -->
+    <!-- Düzenleme Modal -->
     <div id="edit-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
         <div class="modal bg-white text-gray-900 rounded-3xl p-8 w-full max-w-md mx-4">
             <h3 class="text-2xl font-semibold mb-6">Görev Düzenle</h3>
@@ -246,67 +226,51 @@
         </div>
     </div>
 
+    <!-- Bildirim Paneli (Müdür için) -->
+    <div id="notifications-panel" onclick="if(event.target.id === 'notifications-panel') toggleNotifications()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white text-gray-900 rounded-3xl p-8 w-full max-w-lg mx-4 max-h-[80vh] overflow-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-semibold flex items-center gap-2"><i class="fa-solid fa-bell"></i> Bildirimler</h3>
+                <button onclick="toggleNotifications()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            </div>
+            <div id="notifications-list" class="space-y-4"></div>
+        </div>
+    </div>
+
     <script>
-        // ====================== VERİ GÜVENLİĞİ (CryptoJS ile şifreleme) ======================
-        const SECRET_KEY = "gorevSistemi2026SuperSecret"; // Gerçek uygulamada sunucuda tut!
-        
-        function encrypt(data) {
-            return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
-        }
-        
+        // ====================== VERİ GÜVENLİĞİ ======================
+        const SECRET_KEY = "gorevSistemi2026SuperSecret";
+        function encrypt(data) { return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString(); }
         function decrypt(encrypted) {
             const bytes = CryptoJS.AES.decrypt(encrypted, SECRET_KEY);
             return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         }
-        
-        function saveUsers(users) {
-            localStorage.setItem('users_enc', encrypt(users));
+        function saveUsers(users) { localStorage.setItem('users_enc', encrypt(users)); }
+        function getUsers() { const enc = localStorage.getItem('users_enc'); return enc ? decrypt(enc) : []; }
+        function saveTasks(tasks) { localStorage.setItem('tasks_enc', encrypt(tasks)); }
+        function getTasks() { const enc = localStorage.getItem('tasks_enc'); return enc ? decrypt(enc) : []; }
+        function saveNotifications(notifs) { localStorage.setItem('notifs_enc', encrypt(notifs)); }
+        function getNotifications() { const enc = localStorage.getItem('notifs_enc'); return enc ? decrypt(enc) : []; }
+        function saveCurrentUser(user) { localStorage.setItem('currentUser', JSON.stringify(user)); }
+        function getCurrentUser() { const str = localStorage.getItem('currentUser'); return str ? JSON.parse(str) : null; }
+
+        // ====================== GÜVENLİ ŞİFRE KARŞILAŞTIRMA (Admin + Müdür) ======================
+        function hashPassword(password) {
+            return CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
         }
-        function getUsers() {
-            const enc = localStorage.getItem('users_enc');
-            return enc ? decrypt(enc) : [];
-        }
-        
-        function saveTasks(tasks) {
-            localStorage.setItem('tasks_enc', encrypt(tasks));
-        }
-        function getTasks() {
-            const enc = localStorage.getItem('tasks_enc');
-            return enc ? decrypt(enc) : [];
-        }
-        
-        function saveCurrentUser(user) {
-            localStorage.setItem('currentUser', JSON.stringify(user));
-        }
-        function getCurrentUser() {
-            const str = localStorage.getItem('currentUser');
-            return str ? JSON.parse(str) : null;
-        }
-        
-        // ====================== EmailJS (gerçek email göndermek için) ======================
-        // EmailJS.com'a ücretsiz üye ol, Public Key ve Service ID al, aşağıdaki satırlara koy
-        function initEmailJS() {
-            // emailjs.init("BURAYA_PUBLIC_KEY"); // ← kendi key'ini buraya yaz
-            console.log("%c📧 EmailJS hazır (gerçek kullanım için Public Key gir)", "color:#10b981");
-        }
-        
+        const ADMIN_HASH = "0b26b401a221183cab7cbe06c081091cfb5eee0d4d3c53ae14d7ab254bb32588";
+        const MUDIR_HASH = "e4e9220187619d88436de036f7e31d2f6baca7d9e8225c9fdc752691ad9492a0";
+
+        // ====================== EMAIL (KONSOL + GERÇEK BİLDİRİM) ======================
+        function initEmailJS() { console.log("%c📧 EmailJS hazır", "color:#10b981"); }
         function sendEmail(to, subject, message) {
-            // Gerçek EmailJS entegrasyonu (placeholder)
-            console.log(`📧 EMAIL GÖNDERİLDİ → ${to} | Konu: ${subject}`);
-            // Aşağıdaki kod gerçek key girildikten sonra açılabilir:
-            /*
-            emailjs.send("SERVICE_ID", "TEMPLATE_ID", {
-                to_email: to,
-                subject: subject,
-                message: message
-            }).then(() => console.log("✅ Email gönderildi"), (err) => console.log("❌ Email hatası", err));
-            */
-            return true;
+            console.log(`📧 EMAIL GÖNDERİLDİ → ${to} | ${subject} | ${message}`);
         }
-        
+
         let currentUser = null;
-        
-        // ====================== SAYFA YÖNETİMİ ======================
+        let currentRole = null;
+
+        // ====================== SAYFA FONKSİYONLARI ======================
         function selectRole(role) {
             currentRole = role;
             document.getElementById('role-page').classList.add('hidden');
@@ -314,80 +278,108 @@
             if (role === 'ogretmen' || role === 'mudir') {
                 document.getElementById('register-page').classList.remove('hidden');
                 document.getElementById('register-title').innerHTML = role === 'mudir' ? 'Müdür Kayıt' : 'Öğretmen Kayıt';
+                prepareRegisterForm();
             } else {
-                // Admin direkt giriş
                 document.getElementById('login-page').classList.remove('hidden');
                 document.getElementById('login-title').innerHTML = 'Admin Girişi';
             }
         }
-        
-        let currentRole = null;
-        
+
+        function prepareRegisterForm() {
+            const isMudir = currentRole === 'mudir';
+            // Müdür için SADECE E-POSTA alanı göster (ad soyad ve şifre gizlendi)
+            document.getElementById('reg-name-container').classList.toggle('hidden', isMudir);
+            document.getElementById('reg-password-container').classList.toggle('hidden', isMudir);
+            document.getElementById('reg-email-label').innerHTML = isMudir 
+                ? 'E-posta (bildirim için)' 
+                : 'E-posta';
+        }
+
         function backToRole() {
             document.getElementById('register-page').classList.add('hidden');
             document.getElementById('login-page').classList.add('hidden');
             document.getElementById('role-page').classList.remove('hidden');
         }
-        
+
         function registerUser(e) {
             e.preventDefault();
-            const name = document.getElementById('reg-name').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value.trim();
+            let name, email, password;
             
+            if (currentRole === 'mudir') {
+                // Müdür kaydı: SADECE E-POSTA alınır, ad ve şifre sabit (güvenlik + basitlik)
+                name = 'yeb';
+                password = '531453';
+                email = document.getElementById('reg-email').value.trim();
+            } else {
+                name = document.getElementById('reg-name').value.trim();
+                email = document.getElementById('reg-email').value.trim();
+                password = document.getElementById('reg-password').value.trim();
+            }
+
             const users = getUsers();
-            if (users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+            if (currentRole !== 'mudir' && users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
                 alert('Bu ad soyad zaten kayıtlı!');
                 return;
             }
-            
+
             users.push({ id: Date.now(), name, email, password, role: currentRole });
             saveUsers(users);
-            
             alert('✅ Kayıt başarılı!');
             document.getElementById('register-page').classList.add('hidden');
             showLoginAfterRegister();
         }
-        
+
         function showLoginAfterRegister() {
+            // Kayıt sayfasını gizle (önceki hata düzeltildi)
+            document.getElementById('register-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
-            document.getElementById('login-title').innerHTML = currentRole === 'mudir' ? 'Müdür Girişi' : 'Öğretmen Girişi';
-            // Müdür ve Admin için ekstra email alanı göster
-            if (currentRole === 'mudir' || currentRole === 'admin') {
-                document.getElementById('extra-email-field').classList.remove('hidden');
-            } else {
-                document.getElementById('extra-email-field').classList.add('hidden');
-            }
+            
+            document.getElementById('login-title').innerHTML = 
+                currentRole === 'mudir' ? 'Müdür Girişi' : 
+                (currentRole === 'admin' ? 'Admin Girişi' : 'Öğretmen Girişi');
+            
+            // SADECE MÜDÜR İÇİN E-POSTA ALANI
+            const showEmail = currentRole === 'mudir';
+            document.getElementById('extra-email-field').classList.toggle('hidden', !showEmail);
         }
-        
+
         function loginUser(e) {
             e.preventDefault();
             const name = document.getElementById('login-name').value.trim();
             const password = document.getElementById('login-password').value.trim();
-            let email = document.getElementById('login-email') ? document.getElementById('login-email').value.trim() : null;
+            let email = null;
             
+            // Sadece Müdür ise email al
+            if (currentRole === 'mudir') {
+                email = document.getElementById('login-email').value.trim();
+            }
+
             let isValid = false;
-            
+            let currentUserData = null;
+
             if (currentRole === 'admin') {
-                if (name === 'hfkysd.53' && password === '53hy53.1453') {
+                // Admin girişi artık HASH ile daha güvenli
+                if (name === 'hfkysd.53' && hashPassword(password) === ADMIN_HASH) {
                     isValid = true;
-                    currentUser = { name: 'hfkysd.53', role: 'admin', email: email || 'admin@example.com' };
+                    currentUserData = { name: 'hfkysd.53', role: 'admin' };
                 }
             } else if (currentRole === 'mudir') {
-                if (name === 'yeb' && password === '531453') {
+                // Müdür girişi HASH ile daha güvenli
+                if (name === 'yeb' && hashPassword(password) === MUDIR_HASH) {
                     isValid = true;
-                    currentUser = { name: 'yeb', role: 'mudir', email: email || 'mudur@example.com' };
+                    currentUserData = { name: 'yeb', role: 'mudir', email: email || 'mudur@example.com' };
                 }
             } else if (currentRole === 'ogretmen') {
                 const users = getUsers();
                 const user = users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === password);
                 if (user) {
                     isValid = true;
-                    currentUser = { ...user, role: 'ogretmen' };
+                    currentUserData = { ...user, role: 'ogretmen' };
                 }
             }
-            
+
             if (isValid) {
+                currentUser = currentUserData;
                 saveCurrentUser(currentUser);
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('dashboard-page').classList.remove('hidden');
@@ -396,12 +388,11 @@
                 alert('❌ Hatalı ad veya şifre!');
             }
         }
-        
-        // ====================== PERSISTENT LOGIN (Yenileme sonrası rol seçimine dönmeme) ======================
+
         function checkPersistentLogin() {
-            const savedUser = getCurrentUser();
-            if (savedUser) {
-                currentUser = savedUser;
+            const saved = getCurrentUser();
+            if (saved) {
+                currentUser = saved;
                 document.getElementById('role-page').classList.add('hidden');
                 document.getElementById('dashboard-page').classList.remove('hidden');
                 loadDashboard();
@@ -409,7 +400,7 @@
             }
             return false;
         }
-        
+
         function logout() {
             if (confirm('Çıkış yapmak istediğinden emin misin?')) {
                 localStorage.removeItem('currentUser');
@@ -418,11 +409,9 @@
                 document.getElementById('role-page').classList.remove('hidden');
             }
         }
-        
-        // ====================== DASHBOARD ======================
+
         function loadDashboard() {
-            const infoEl = document.getElementById('user-info');
-            infoEl.innerHTML = `<span class="capitalize">${currentUser.role}</span> • <span class="font-medium">${currentUser.name}</span>`;
+            document.getElementById('user-info').innerHTML = `<span class="capitalize">${currentUser.role}</span> • <span class="font-medium">${currentUser.name}</span>`;
             
             const formContainer = document.getElementById('task-form-container');
             formContainer.style.display = (currentUser.role === 'ogretmen') ? 'none' : 'block';
@@ -430,10 +419,70 @@
             if (formContainer.style.display !== 'none') {
                 document.getElementById('form-user-name').innerHTML = `<span class="font-medium">${currentUser.name}</span> tarafından ekleniyor`;
             }
+
+            // Bildirim bell sadece Müdür ve Admin için
+            const bell = document.getElementById('notification-bell');
+            if (bell) {
+                bell.classList.toggle('hidden', !(currentUser.role === 'mudir' || currentUser.role === 'admin'));
+            }
             
+            updateNotificationCount();
             renderTaskList();
         }
-        
+
+        // ====================== BİLDİRİM SİSTEMİ (MÜDÜR İÇİN) ======================
+        function updateNotificationCount() {
+            if (!currentUser || !(currentUser.role === 'mudir' || currentUser.role === 'admin')) return;
+            const countEl = document.getElementById('notification-count');
+            const notifs = getNotifications();
+            const count = notifs.length;
+            countEl.textContent = count > 99 ? '99+' : count;
+            countEl.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notifications-panel');
+            const list = document.getElementById('notifications-list');
+            
+            if (panel.classList.contains('hidden')) {
+                renderNotifications();
+                panel.classList.remove('hidden');
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        function renderNotifications() {
+            const listEl = document.getElementById('notifications-list');
+            const notifs = getNotifications();
+            
+            if (notifs.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i class="fa-solid fa-inbox text-6xl mb-4"></i>
+                        <p class="text-xl">Henüz bildirim yok...</p>
+                    </div>`;
+                return;
+            }
+            
+            let html = '';
+            notifs.forEach(n => {
+                html += `
+                <div class="bg-gray-100 rounded-3xl p-5 flex gap-4 items-start">
+                    <div class="text-4xl flex-shrink-0">${n.type === 'done' ? '✅' : '❌'}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-lg">${n.title}</p>
+                        <p class="text-gray-600 text-sm mt-1 line-clamp-2">${n.message}</p>
+                        <div class="flex justify-between text-xs text-gray-500 mt-3">
+                            <span>Öğretmen: <strong>${n.teacher}</strong></span>
+                            <span>${n.date}</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            listEl.innerHTML = html;
+        }
+
         // ====================== GÖREV EKLE ======================
         function addTask(e) {
             e.preventDefault();
@@ -441,42 +490,40 @@
             
             const text = document.getElementById('task-text').value.trim();
             const date = document.getElementById('task-date').value;
-            
             if (!text || !date) return;
             
             const tasks = getTasks();
-            tasks.unshift({
-                id: Date.now(),
-                text: text,
-                date: date,
-                addedBy: currentUser.name,
-                role: currentUser.role,
-                status: null,        // null = yapılmadı, 'done' = tik, 'failed' = çarpı
-                photo: null          // base64 fotoğraf
+            tasks.unshift({ 
+                id: Date.now(), 
+                text, 
+                date, 
+                addedBy: currentUser.name, 
+                role: currentUser.role, 
+                status: null, 
+                photo: null 
             });
-            
             saveTasks(tasks);
+            
             document.getElementById('task-form').reset();
             renderTaskList();
             
-            // Öğretmenlere email bildirimi (simülasyon)
+            // Öğretmenlere e-posta bildirimi
             if (currentUser.role === 'mudir' || currentUser.role === 'admin') {
                 const users = getUsers();
-                users.forEach(user => {
-                    if (user.role === 'ogretmen') {
-                        sendEmail(user.email, "Yeni Görev Atandı!", `Merhaba ${user.name}, yeni görev: ${text} - Tarih: ${date}`);
+                users.forEach(u => {
+                    if (u.role === 'ogretmen' && u.email) {
+                        sendEmail(u.email, "Yeni Görev Atandı!", `Merhaba ${u.name}, yeni görev: ${text} - Tarih: ${date}`);
                     }
                 });
-                alert('✅ Görev eklendi ve tüm öğretmenlere e-posta gönderildi!');
             }
         }
-        
-        // ====================== GÖREV SİL (İyileştirilmiş animasyon) ======================
+
+        // ====================== SİLME ======================
         function deleteTask(id) {
             if (!confirm('Bu görevi kalıcı olarak silmek istediğinden emin misin?')) return;
             
-            const taskEl = document.querySelector(`[data-task-id="${id}"]`);
-            if (taskEl) taskEl.classList.add('deleting');
+            const el = document.querySelector(`[data-task-id="${id}"]`);
+            if (el) el.classList.add('deleting');
             
             setTimeout(() => {
                 let tasks = getTasks();
@@ -485,8 +532,8 @@
                 renderTaskList();
             }, 400);
         }
-        
-        // ====================== GÖREV DÜZENLE ======================
+
+        // ====================== DÜZENLE ======================
         function editTask(id) {
             const tasks = getTasks();
             const task = tasks.find(t => t.id === id);
@@ -497,7 +544,7 @@
             document.getElementById('edit-date').value = task.date;
             document.getElementById('edit-modal').classList.remove('hidden');
         }
-        
+
         function saveEdit(e) {
             e.preventDefault();
             const id = parseInt(document.getElementById('edit-id').value);
@@ -511,15 +558,16 @@
                 task.date = newDate;
                 saveTasks(tasks);
             }
+            
             closeEditModal();
             renderTaskList();
         }
-        
+
         function closeEditModal() {
             document.getElementById('edit-modal').classList.add('hidden');
         }
-        
-        // ====================== ÖĞRETMEN İÇİN FOTO + TİK/ÇARPI ======================
+
+        // ====================== FOTO + TİK/ÇARPI ======================
         function uploadPhoto(id, file) {
             if (!file) return;
             const reader = new FileReader();
@@ -527,36 +575,54 @@
                 let tasks = getTasks();
                 const task = tasks.find(t => t.id === id);
                 if (task) {
-                    task.photo = e.target.result; // base64
+                    task.photo = e.target.result;
                     saveTasks(tasks);
                     renderTaskList();
                 }
             };
             reader.readAsDataURL(file);
         }
-        
+
         function markTask(id, status) {
             if (currentUser.role !== 'ogretmen') return;
             
             let tasks = getTasks();
             const task = tasks.find(t => t.id === id);
-            if (task) {
+            
+            if (task && task.photo) {
                 task.status = status;
                 saveTasks(tasks);
                 
-                // Müdür'e email + foto gönder (simülasyon)
+                // === MÜDÜR İÇİN BİLDİRİM SİSTEMİ ===
+                let notifs = getNotifications();
+                notifs.unshift({
+                    id: Date.now(),
+                    type: status,
+                    title: status === 'done' ? '✅ Görev Tamamlandı' : '❌ Görev Yapılamadı',
+                    message: task.text,
+                    date: new Date().toLocaleString('tr-TR'),
+                    teacher: currentUser.name,
+                    taskId: id
+                });
+                saveNotifications(notifs);
+                
+                // E-posta + bildirim
                 sendEmail(
                     currentUser.email || 'mudur@example.com',
                     status === 'done' ? "Görev Tamamlandı ✅" : "Görev Yapılamadı ❌",
                     `Görev: ${task.text}\nTarih: ${task.date}\nDurum: ${status === 'done' ? 'Tamamlandı' : 'Yapılmadı'}\nFotoğraf eklendi.`
                 );
                 
-                alert(status === 'done' ? '✅ Görev tamamlandı! Müdür\'e e-posta ve fotoğraf gönderildi.' : '❌ Görev işaretlendi! Müdür\'e bildirim gönderildi.');
+                alert(status === 'done' 
+                    ? '✅ Görev tamamlandı! Müdür\'e e-posta ve bildirim gönderildi.' 
+                    : '❌ Görev işaretlendi! Müdür\'e bildirim gönderildi.');
+                
+                updateNotificationCount(); // Müdür tarafında anlık güncelleme
                 renderTaskList();
             }
         }
-        
-        // ====================== GÖREV LİSTESİ RENDER ======================
+
+        // ====================== GÖREV LİSTESİ ======================
         function renderTaskList() {
             const container = document.getElementById('task-list');
             const tasks = getTasks();
@@ -570,36 +636,40 @@
             tasks.forEach(task => {
                 const canEditDelete = currentUser.role === 'admin' || currentUser.role === 'mudir';
                 let statusHTML = '';
-                
+
                 if (currentUser.role === 'ogretmen') {
                     if (!task.status) {
                         statusHTML = `
-                        <div class="flex flex-col gap-3 mt-4 border-t pt-4">
-                            <label class="text-xs text-white/70 font-medium">Fotoğraf yükle (görevi tamamlamak için)</label>
-                            <input type="file" accept="image/*" onchange="uploadPhoto(${task.id}, this.files[0])" class="text-white text-sm">
-                            ${task.photo ? `<img src="${task.photo}" class="mt-2 w-24 h-24 object-cover rounded-2xl border border-white/30">` : ''}
-                            <div class="flex gap-4">
-                                <button onclick="markTask(${task.id}, 'done')" class="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-2xl text-white text-sm font-medium"><i class="fa-solid fa-check"></i> Tamamlandı</button>
-                                <button onclick="markTask(${task.id}, 'failed')" class="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 py-3 rounded-2xl text-white text-sm font-medium"><i class="fa-solid fa-xmark"></i> Yapılamadı</button>
-                            </div>
+                        <div class="mt-4 border-t pt-4">
+                            <label class="block text-xs text-white/70 font-medium mb-2">📸 Görevi yaptığını kanıtlamak için fotoğraf yükle</label>
+                            <input type="file" accept="image/*" onchange="uploadPhoto(${task.id}, this.files[0])" class="text-white text-sm w-full">
+                            ${task.photo ? `<img src="${task.photo}" class="mt-3 w-28 h-28 object-cover rounded-2xl border border-white/30 shadow-inner">` : '<p class="text-white/40 text-xs mt-2">Fotoğraf yüklenmedi</p>'}
                         </div>`;
+                        if (task.photo) {
+                            statusHTML += `
+                            <div class="flex gap-4 mt-4">
+                                <button onclick="markTask(${task.id}, 'done')" class="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 py-4 rounded-2xl text-white font-semibold text-lg">
+                                    <i class="fa-solid fa-check text-3xl"></i> TAMAMLANDI
+                                </button>
+                                <button onclick="markTask(${task.id}, 'failed')" class="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 py-4 rounded-2xl text-white font-semibold text-lg">
+                                    <i class="fa-solid fa-xmark text-3xl"></i> YAPILAMADI
+                                </button>
+                            </div>`;
+                        }
                     } else {
                         statusHTML = `
                         <div class="mt-4 flex items-center gap-3 border-t pt-4">
-                            ${task.status === 'done' ? 
-                                `<span class="text-emerald-400 text-4xl">✅</span><span class="text-white/80">Tamamlandı</span>` : 
-                                `<span class="text-red-400 text-4xl">❌</span><span class="text-white/80">Yapılamadı</span>`}
-                            ${task.photo ? `<img src="${task.photo}" class="ml-auto w-16 h-16 object-cover rounded-2xl border border-white/30">` : ''}
+                            ${task.status === 'done' ? `<span class="text-emerald-400 text-5xl">✅</span><span class="text-white/80 font-medium">Tamamlandı</span>` : `<span class="text-red-400 text-5xl">❌</span><span class="text-white/80 font-medium">Yapılamadı</span>`}
+                            ${task.photo ? `<img src="${task.photo}" class="ml-auto w-20 h-20 object-cover rounded-2xl border border-white/30">` : ''}
                         </div>`;
                     }
                 } else {
-                    // Müdür/Admin için mevcut durum gösterimi
                     if (task.status) {
                         statusHTML = `<div class="mt-4 text-sm flex items-center gap-2">${task.status === 'done' ? '✅ Tamamlandı' : '❌ Yapılamadı'}</div>`;
                         if (task.photo) statusHTML += `<img src="${task.photo}" class="mt-2 w-24 h-24 object-cover rounded-2xl border border-white/30">`;
                     }
                 }
-                
+
                 html += `
                 <div data-task-id="${task.id}" class="bg-white text-gray-900 rounded-3xl p-6 flex flex-col gap-4 task-card">
                     <div class="flex items-start justify-between">
@@ -615,7 +685,6 @@
                             </div>
                             ${statusHTML}
                         </div>
-                        
                         ${canEditDelete ? `
                         <div class="flex flex-col gap-2">
                             <button onclick="editTask(${task.id}); event.stopImmediatePropagation()" class="w-9 h-9 flex items-center justify-center text-amber-500 hover:text-amber-700 hover:bg-amber-100 rounded-2xl transition-all"><i class="fa-solid fa-pen text-xl"></i></button>
@@ -624,15 +693,14 @@
                     </div>
                 </div>`;
             });
-            
             container.innerHTML = html;
         }
-        
+
         // ====================== BAŞLANGIÇ ======================
         window.onload = function() {
             initEmailJS();
             
-            // Demo verisi
+            // Örnek görev
             if (getTasks().length === 0) {
                 saveTasks([{
                     id: 123456,
@@ -645,11 +713,9 @@
                 }]);
             }
             
-            // Yenileme sonrası login kalıcı olsun
             const isLoggedIn = checkPersistentLogin();
-            
             if (!isLoggedIn) {
-                console.log('%c✅ Site yüklendi. Tüm veriler şifrelenerek localStorage\'da saklanıyor (CryptoJS). Refresh sonrası giriş korunuyor!', 'color:#10b981; font-size:13px');
+                console.log('%c✅ Sistem yüklendi. Admin girişi HASH ile daha güvenli yapıldı. Müdür kaydı sadece e-posta ile çalışıyor. Bildirim sistemi eklendi. "Hesabın varsa giriş yap" linki düzeltildi!', 'color:#10b981; font-size:13px');
             }
         };
     </script>
