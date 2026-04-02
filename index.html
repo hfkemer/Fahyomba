@@ -3,123 +3,536 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
-
+    <title>Görev Yönetim Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        
+        :root {
+            --tail-color: #c0c0c0;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            margin-top: 50px;
+            font-family: 'Inter', sans-serif;
         }
-
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            width: 350px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        
+        .modern-input {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        h2 {
-            text-align: center;
+        
+        .modern-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 
+                       0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
-
-        .input-area {
-            display: flex;
-            margin-bottom: 15px;
+        
+        .page {
+            animation: fadeIn 0.4s ease forwards;
         }
-
-        input {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px 0 0 8px;
-            border: 1px solid #ccc;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        button {
-            padding: 10px;
-            border: none;
-            background: #28a745;
-            color: white;
-            cursor: pointer;
-            border-radius: 0 8px 8px 0;
+        
+        .task-card {
+            border: 3px solid #111827;
+            box-shadow: 0 10px 15px -3px rgb(17 24 39);
         }
-
-        ul {
-            list-style: none;
-            padding: 0;
+        
+        .navy-bg {
+            background: linear-gradient(135deg, #001f3f 0%, #003366 100%);
         }
-
-        li {
-            padding: 10px;
-            margin-bottom: 8px;
-            background: #eee;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        .silver-bg {
+            background: linear-gradient(135deg, #c0c0c0 0%, #d1d5db 100%);
         }
-
-        li.completed {
-            text-decoration: line-through;
-            background: #c8e6c9;
+        
+        .rotating-border {
+            position: relative;
         }
-
-        .delete-btn {
-            background: red;
-            border: none;
-            color: white;
-            padding: 5px 8px;
-            border-radius: 5px;
-            cursor: pointer;
+        
+        .rotating-border::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            background: linear-gradient(45deg, #111827, #111827, #111827, transparent) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            animation: rotateBorder 4s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotateBorder {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-100">
 
-<div class="container">
-    <h2>Yapılacaklar Listesi</h2>
+    <!-- ROL SEÇİM SAYFASI -->
+    <div id="role-page" class="min-h-screen silver-bg flex items-center justify-center page">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold text-gray-900 mb-3 tracking-tight">Hoş Geldin!</h1>
+                <p class="text-xl text-gray-700">Lütfen rolünü seç</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Admin Kartı -->
+                <div onclick="selectRole('admin')" 
+                     class="cursor-pointer bg-white rounded-3xl shadow-2xl p-8 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-gray-900 group">
+                    <div class="flex justify-center mb-6">
+                        <i class="fa-solid fa-shield-halved text-7xl text-amber-600 group-hover:rotate-12 transition-transform"></i>
+                    </div>
+                    <h3 class="text-3xl font-semibold text-center text-gray-900 mb-2">Admin</h3>
+                    <p class="text-center text-gray-500">Sistem yöneticisi</p>
+                </div>
 
-    <div class="input-area">
-        <input type="text" id="taskInput" placeholder="Görev yaz...">
-        <button onclick="addTask()">Ekle</button>
+                <!-- Müdür Kartı -->
+                <div onclick="selectRole('mudir')" 
+                     class="cursor-pointer bg-white rounded-3xl shadow-2xl p-8 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-gray-900 group">
+                    <div class="flex justify-center mb-6">
+                        <i class="fa-solid fa-user-tie text-7xl text-blue-700 group-hover:rotate-12 transition-transform"></i>
+                    </div>
+                    <h3 class="text-3xl font-semibold text-center text-gray-900 mb-2">Müdür</h3>
+                    <p class="text-center text-gray-500">Görev atayan</p>
+                </div>
+
+                <!-- Öğretmen Kartı -->
+                <div onclick="selectRole('ogretmen')" 
+                     class="cursor-pointer bg-white rounded-3xl shadow-2xl p-8 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-gray-900 group">
+                    <div class="flex justify-center mb-6">
+                        <i class="fa-solid fa-chalkboard-teacher text-7xl text-emerald-600 group-hover:rotate-12 transition-transform"></i>
+                    </div>
+                    <h3 class="text-3xl font-semibold text-center text-gray-900 mb-2">Öğretmen</h3>
+                    <p class="text-center text-gray-500">Sadece görüntüleme</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <ul id="taskList"></ul>
-</div>
+    <!-- KAYIT SAYFASI (Sadece Öğretmen) -->
+    <div id="register-page" class="hidden min-h-screen silver-bg flex items-center justify-center page">
+        <div class="max-w-md w-full mx-auto bg-white rounded-3xl shadow-2xl p-10">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-semibold text-gray-900">Kayıt Ol</h2>
+                <button onclick="backToRole()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-arrow-left text-2xl"></i>
+                </button>
+            </div>
+            
+            <form id="register-form" onsubmit="registerUser(event)">
+                <div class="space-y-6">
+                    <!-- Ad Soyad -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
+                        <input type="text" id="reg-name" required
+                               class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
+                    </div>
+                    
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
+                        <input type="email" id="reg-email" required
+                               class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
+                    </div>
+                    
+                    <!-- Şifre -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
+                        <input type="password" id="reg-password" required
+                               class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
+                    </div>
+                    
+                    <button type="submit"
+                            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 rounded-2xl text-xl transition-all">
+                        Kayıt Ol
+                    </button>
+                </div>
+            </form>
+            
+            <p onclick="showLoginAfterRegister()" class="text-center text-sm text-gray-500 mt-6 cursor-pointer hover:text-gray-700">
+                Zaten hesabın var mı? Giriş yap
+            </p>
+        </div>
+    </div>
 
-<script>
-    function addTask() {
-        let input = document.getElementById("taskInput");
-        let taskText = input.value.trim();
+    <!-- GİRİŞ SAYFASI -->
+    <div id="login-page" class="hidden min-h-screen silver-bg flex items-center justify-center page">
+        <div class="max-w-md w-full mx-auto bg-white rounded-3xl shadow-2xl p-10">
+            <div class="flex items-center justify-between mb-8">
+                <h2 id="login-title" class="text-3xl font-semibold text-gray-900">Giriş Yap</h2>
+                <button onclick="backToRole()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-arrow-left text-2xl"></i>
+                </button>
+            </div>
+            
+            <form id="login-form" onsubmit="loginUser(event)">
+                <div class="space-y-6">
+                    <!-- Ad Soyad -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
+                        <input type="text" id="login-name" required
+                               class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
+                    </div>
+                    
+                    <!-- Şifre -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
+                        <input type="password" id="login-password" required
+                               class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
+                    </div>
+                    
+                    <button type="submit"
+                            class="w-full bg-gray-900 hover:bg-black text-white font-semibold py-4 rounded-2xl text-xl transition-all">
+                        Giriş Yap
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        if(taskText === "") return;
+    <!-- ANA EKRAN (DASHBOARD) -->
+    <div id="dashboard-page" class="hidden min-h-screen navy-bg text-white page">
+        <div class="max-w-7xl mx-auto px-8 py-8">
+            
+            <!-- Üst Bar -->
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl">
+                        📋
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-semibold">Görev Paneli</h1>
+                        <p id="user-info" class="text-white/70 text-lg"></p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-6">
+                    <button onclick="logout()" 
+                            class="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-6 py-3 rounded-2xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Çıkış Yap
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Görev Ekleme Kartı (Sadece Müdür ve Admin) -->
+                <div id="task-form-container" class="lg:col-span-5">
+                    <div class="rotating-border bg-white text-gray-900 rounded-3xl p-8 task-card">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-2xl text-sm font-semibold flex items-center">
+                                <i class="fa-solid fa-plus mr-2"></i>
+                                YENİ GÖREV
+                            </div>
+                            <p id="form-user-name" class="text-lg font-medium"></p>
+                        </div>
+                        
+                        <form id="task-form" onsubmit="addTask(event)">
+                            <textarea id="task-text" rows="3"
+                                      class="w-full px-5 py-4 border-2 border-gray-900 rounded-2xl text-lg resize-none focus:outline-none"
+                                      placeholder="Görev açıklamasını yaz..."></textarea>
+                            
+                            <div class="mt-6 grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-gray-500 mb-2">Tarih</label>
+                                    <input type="date" id="task-date" required
+                                           class="w-full px-5 py-4 border-2 border-gray-900 rounded-2xl text-lg focus:outline-none">
+                                </div>
+                                <div class="flex items-end">
+                                    <button type="submit"
+                                            class="w-full bg-gray-900 text-white py-4 rounded-2xl text-xl font-semibold hover:bg-black transition-all">
+                                        Görevi Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Görev Listesi -->
+                <div class="lg:col-span-7">
+                    <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/30">
+                        <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                            <i class="fa-solid fa-list-check"></i>
+                            Görevler
+                        </h3>
+                        
+                        <div id="task-list" class="space-y-4 max-h-[560px] overflow-auto pr-2">
+                            <!-- JS ile doldurulacak -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        let li = document.createElement("li");
-        li.textContent = taskText;
-
-        // Tamamlandı yap
-        li.onclick = function() {
-            li.classList.toggle("completed");
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            // Zaten CDN ile yüklü
+        }
+        
+        // Veri tabanı simülasyonu (localStorage)
+        let currentUser = null;
+        let currentRole = null;
+        
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users')) || [];
+        }
+        
+        function saveTasks(tasks) {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+        
+        function getTasks() {
+            return JSON.parse(localStorage.getItem('tasks')) || [];
+        }
+        
+        // Rol seçimi
+        function selectRole(role) {
+            currentRole = role;
+            
+            document.getElementById('role-page').classList.add('hidden');
+            
+            if (role === 'ogretmen') {
+                // Öğretmen → önce kayıt
+                document.getElementById('register-page').classList.remove('hidden');
+            } else {
+                // Admin veya Müdür → direkt giriş
+                document.getElementById('login-page').classList.remove('hidden');
+                document.getElementById('login-title').innerHTML = role === 'admin' ? 
+                    'Admin Girişi' : 'Müdür Girişi';
+            }
+        }
+        
+        function backToRole() {
+            document.getElementById('register-page').classList.add('hidden');
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('role-page').classList.remove('hidden');
+            currentRole = null;
+        }
+        
+        // Kayıt (Sadece öğretmen)
+        function registerUser(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
+            
+            if (!name || !email || !password) return;
+            
+            const users = getUsers();
+            
+            // Aynı isim kontrolü
+            if (users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+                alert('Bu ad soyad zaten kayıtlı!');
+                return;
+            }
+            
+            users.push({
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password,
+                role: 'ogretmen'
+            });
+            
+            saveUsers(users);
+            
+            alert('✅ Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+            
+            // Kayıttan sonra direkt login sayfasına geç
+            document.getElementById('register-page').classList.add('hidden');
+            document.getElementById('login-page').classList.remove('hidden');
+            document.getElementById('login-title').innerHTML = 'Öğretmen Girişi';
+            
+            // Formu temizle
+            document.getElementById('register-form').reset();
+        }
+        
+        // Giriş yap
+        function loginUser(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('login-name').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            
+            if (!name || !password) return;
+            
+            let isValid = false;
+            
+            if (currentRole === 'admin') {
+                if (name === 'hfkysd.53' && password === '53hy53.1453') {
+                    isValid = true;
+                    currentUser = { name: 'hfkysd.53', role: 'admin' };
+                }
+            } 
+            else if (currentRole === 'mudir') {
+                if (name === 'yeb' && password === '531453') {
+                    isValid = true;
+                    currentUser = { name: 'yeb', role: 'mudir' };
+                }
+            } 
+            else if (currentRole === 'ogretmen') {
+                const users = getUsers();
+                const user = users.find(u => 
+                    u.name.toLowerCase() === name.toLowerCase() && 
+                    u.password === password
+                );
+                if (user) {
+                    isValid = true;
+                    currentUser = { ...user, role: 'ogretmen' };
+                }
+            }
+            
+            if (isValid) {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('dashboard-page').classList.remove('hidden');
+                loadDashboard();
+            } else {
+                alert('❌ Hatalı ad veya şifre!');
+            }
+        }
+        
+        function showLoginAfterRegister() {
+            document.getElementById('register-page').classList.add('hidden');
+            document.getElementById('login-page').classList.remove('hidden');
+            document.getElementById('login-title').innerHTML = 'Öğretmen Girişi';
+        }
+        
+        // Dashboard yükle
+        function loadDashboard() {
+            const infoEl = document.getElementById('user-info');
+            infoEl.innerHTML = `
+                <span class="capitalize">${currentUser.role}</span> • 
+                <span class="font-medium">${currentUser.name}</span>
+            `;
+            
+            // Formu göster/gizle
+            const formContainer = document.getElementById('task-form-container');
+            if (currentUser.role === 'ogretmen') {
+                formContainer.style.display = 'none';
+            } else {
+                formContainer.style.display = 'block';
+                document.getElementById('form-user-name').innerHTML = `
+                    <span class="font-medium">${currentUser.name}</span> tarafından ekleniyor
+                `;
+            }
+            
+            renderTaskList();
+        }
+        
+        // Görev ekle
+        function addTask(e) {
+            e.preventDefault();
+            
+            if (currentUser.role === 'ogretmen') return;
+            
+            const text = document.getElementById('task-text').value.trim();
+            const date = document.getElementById('task-date').value;
+            
+            if (!text || !date) return;
+            
+            const tasks = getTasks();
+            
+            tasks.unshift({
+                id: Date.now(),
+                text: text,
+                date: date,
+                addedBy: currentUser.name,
+                role: currentUser.role
+            });
+            
+            saveTasks(tasks);
+            document.getElementById('task-form').reset();
+            renderTaskList();
+            
+            // Animasyonlu bildirim
+            const notif = document.createElement('div');
+            notif.className = 'fixed bottom-8 right-8 bg-emerald-600 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3';
+            notif.innerHTML = `✅ Görev eklendi!`;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 2500);
+        }
+        
+        // Görev listesini render et
+        function renderTaskList() {
+            const container = document.getElementById('task-list');
+            const tasks = getTasks();
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white/5 text-white/60 text-center py-16 rounded-3xl">
+                        <i class="fa-solid fa-inbox text-6xl mb-4"></i>
+                        <p class="text-xl">Henüz görev yok...</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            tasks.forEach(task => {
+                html += `
+                <div class="bg-white text-gray-900 rounded-3xl p-6 flex gap-6 items-start border border-gray-900 task-card">
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <p class="font-semibold text-lg">${task.text}</p>
+                            <span class="text-xs px-3 py-1 bg-gray-900 text-white rounded-2xl">${task.date}</span>
+                        </div>
+                        <div class="mt-4 text-sm flex items-center gap-2 text-gray-500">
+                            <i class="fa-solid fa-user"></i>
+                            <span class="font-medium">${task.addedBy}</span>
+                            <span class="text-emerald-600">(${task.role})</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Çıkış
+        function logout() {
+            if (confirm('Çıkış yapmak istediğinden emin misin?')) {
+                currentUser = null;
+                currentRole = null;
+                document.getElementById('dashboard-page').classList.add('hidden');
+                document.getElementById('role-page').classList.remove('hidden');
+            }
+        }
+        
+        // Sayfa yüklendiğinde
+        window.onload = function() {
+            initializeTailwind();
+            
+            // Demo verisi (ilk açılışta)
+            if (getTasks().length === 0) {
+                saveTasks([
+                    {
+                        id: 123456,
+                        text: "Matematik ödevlerini kontrol et",
+                        date: "2026-04-05",
+                        addedBy: "yeb",
+                        role: "mudir"
+                    }
+                ]);
+            }
+            
+            console.log('%c✅ Site başarıyla yüklendi! Tüm veriler localStorage\'da kalıcı olarak saklanıyor.', 'color:#10b981; font-size:13px');
         };
-
-        // Sil butonu
-        let deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "X";
-        deleteBtn.className = "delete-btn";
-        deleteBtn.onclick = function(e) {
-            e.stopPropagation();
-            li.remove();
-        };
-
-        li.appendChild(deleteBtn);
-        document.getElementById("taskList").appendChild(li);
-
-        input.value = "";
-    }
-</script>
-
+    </script>
 </body>
 </html>
