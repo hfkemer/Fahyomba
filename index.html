@@ -258,6 +258,8 @@
         function hashPassword(password) {
             return CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
         }
+        // === GÜNCELLENDİ ===
+        // Admin: ad = hfkysd.53    şifre = 53hy53.1453
         const ADMIN_HASH = "0b26b401a221183cab7cbe06c081091cfb5eee0d4d3c53ae14d7ab254bb32588";
         const MUDIR_HASH = "e4e9220187619d88436de036f7e31d2f6baca7d9e8225c9fdc752691ad9492a0";
 
@@ -287,7 +289,6 @@
 
         function prepareRegisterForm() {
             const isMudir = currentRole === 'mudir';
-            // Müdür için SADECE E-POSTA alanı göster (ad soyad ve şifre gizlendi)
             document.getElementById('reg-name-container').classList.toggle('hidden', isMudir);
             document.getElementById('reg-password-container').classList.toggle('hidden', isMudir);
             document.getElementById('reg-email-label').innerHTML = isMudir 
@@ -306,7 +307,6 @@
             let name, email, password;
             
             if (currentRole === 'mudir') {
-                // Müdür kaydı: SADECE E-POSTA alınır, ad ve şifre sabit (güvenlik + basitlik)
                 name = 'yeb';
                 password = '531453';
                 email = document.getElementById('reg-email').value.trim();
@@ -330,7 +330,6 @@
         }
 
         function showLoginAfterRegister() {
-            // Kayıt sayfasını gizle (önceki hata düzeltildi)
             document.getElementById('register-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
             
@@ -338,7 +337,6 @@
                 currentRole === 'mudir' ? 'Müdür Girişi' : 
                 (currentRole === 'admin' ? 'Admin Girişi' : 'Öğretmen Girişi');
             
-            // SADECE MÜDÜR İÇİN E-POSTA ALANI
             const showEmail = currentRole === 'mudir';
             document.getElementById('extra-email-field').classList.toggle('hidden', !showEmail);
         }
@@ -349,7 +347,6 @@
             const password = document.getElementById('login-password').value.trim();
             let email = null;
             
-            // Sadece Müdür ise email al
             if (currentRole === 'mudir') {
                 email = document.getElementById('login-email').value.trim();
             }
@@ -358,13 +355,12 @@
             let currentUserData = null;
 
             if (currentRole === 'admin') {
-                // Admin girişi artık HASH ile daha güvenli
+                // Admin girişi (hfkysd.53 / 53hy53.1453)
                 if (name === 'hfkysd.53' && hashPassword(password) === ADMIN_HASH) {
                     isValid = true;
                     currentUserData = { name: 'hfkysd.53', role: 'admin' };
                 }
             } else if (currentRole === 'mudir') {
-                // Müdür girişi HASH ile daha güvenli
                 if (name === 'yeb' && hashPassword(password) === MUDIR_HASH) {
                     isValid = true;
                     currentUserData = { name: 'yeb', role: 'mudir', email: email || 'mudur@example.com' };
@@ -420,7 +416,6 @@
                 document.getElementById('form-user-name').innerHTML = `<span class="font-medium">${currentUser.name}</span> tarafından ekleniyor`;
             }
 
-            // Bildirim bell sadece Müdür ve Admin için
             const bell = document.getElementById('notification-bell');
             if (bell) {
                 bell.classList.toggle('hidden', !(currentUser.role === 'mudir' || currentUser.role === 'admin'));
@@ -430,7 +425,7 @@
             renderTaskList();
         }
 
-        // ====================== BİLDİRİM SİSTEMİ (MÜDÜR İÇİN) ======================
+        // ====================== BİLDİRİM SİSTEMİ ======================
         function updateNotificationCount() {
             if (!currentUser || !(currentUser.role === 'mudir' || currentUser.role === 'admin')) return;
             const countEl = document.getElementById('notification-count');
@@ -507,7 +502,6 @@
             document.getElementById('task-form').reset();
             renderTaskList();
             
-            // Öğretmenlere e-posta bildirimi
             if (currentUser.role === 'mudir' || currentUser.role === 'admin') {
                 const users = getUsers();
                 users.forEach(u => {
@@ -518,7 +512,6 @@
             }
         }
 
-        // ====================== SİLME ======================
         function deleteTask(id) {
             if (!confirm('Bu görevi kalıcı olarak silmek istediğinden emin misin?')) return;
             
@@ -533,7 +526,6 @@
             }, 400);
         }
 
-        // ====================== DÜZENLE ======================
         function editTask(id) {
             const tasks = getTasks();
             const task = tasks.find(t => t.id === id);
@@ -567,7 +559,6 @@
             document.getElementById('edit-modal').classList.add('hidden');
         }
 
-        // ====================== FOTO + TİK/ÇARPI ======================
         function uploadPhoto(id, file) {
             if (!file) return;
             const reader = new FileReader();
@@ -593,7 +584,6 @@
                 task.status = status;
                 saveTasks(tasks);
                 
-                // === MÜDÜR İÇİN BİLDİRİM SİSTEMİ ===
                 let notifs = getNotifications();
                 notifs.unshift({
                     id: Date.now(),
@@ -606,7 +596,6 @@
                 });
                 saveNotifications(notifs);
                 
-                // E-posta + bildirim
                 sendEmail(
                     currentUser.email || 'mudur@example.com',
                     status === 'done' ? "Görev Tamamlandı ✅" : "Görev Yapılamadı ❌",
@@ -617,12 +606,11 @@
                     ? '✅ Görev tamamlandı! Müdür\'e e-posta ve bildirim gönderildi.' 
                     : '❌ Görev işaretlendi! Müdür\'e bildirim gönderildi.');
                 
-                updateNotificationCount(); // Müdür tarafında anlık güncelleme
+                updateNotificationCount();
                 renderTaskList();
             }
         }
 
-        // ====================== GÖREV LİSTESİ ======================
         function renderTaskList() {
             const container = document.getElementById('task-list');
             const tasks = getTasks();
@@ -700,7 +688,6 @@
         window.onload = function() {
             initEmailJS();
             
-            // Örnek görev
             if (getTasks().length === 0) {
                 saveTasks([{
                     id: 123456,
@@ -715,7 +702,7 @@
             
             const isLoggedIn = checkPersistentLogin();
             if (!isLoggedIn) {
-                console.log('%c✅ Sistem yüklendi. Admin girişi HASH ile daha güvenli yapıldı. Müdür kaydı sadece e-posta ile çalışıyor. Bildirim sistemi eklendi. "Hesabın varsa giriş yap" linki düzeltildi!', 'color:#10b981; font-size:13px');
+                console.log('%c✅ Sistem yüklendi. Admin girişi: hfkysd.53 / 53hy53.1453 (HASH güncellendi)', 'color:#10b981; font-size:13px');
             }
         };
     </script>
