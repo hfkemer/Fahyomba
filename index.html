@@ -274,11 +274,6 @@
     </div>
 
     <script>
-        // Tailwind script
-        function initializeTailwind() {
-            // Zaten CDN ile yüklü
-        }
-        
         // Veri tabanı simülasyonu (localStorage)
         let currentUser = null;
         let currentRole = null;
@@ -467,6 +462,23 @@
             setTimeout(() => notif.remove(), 2500);
         }
         
+        // 🔥 YENİ: Görev silme özelliği
+        function deleteTask(id) {
+            if (!confirm('Bu görevi kalıcı olarak silmek istediğinden emin misin?')) return;
+            
+            let tasks = getTasks();
+            tasks = tasks.filter(task => task.id !== id);
+            saveTasks(tasks);
+            renderTaskList();
+            
+            // Silme bildirimi
+            const notif = document.createElement('div');
+            notif.className = 'fixed bottom-8 right-8 bg-red-600 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3';
+            notif.innerHTML = `🗑️ Görev silindi!`;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 2500);
+        }
+        
         // Görev listesini render et
         function renderTaskList() {
             const container = document.getElementById('task-list');
@@ -485,6 +497,8 @@
             let html = '';
             
             tasks.forEach(task => {
+                const canDelete = currentUser.role === 'admin' || currentUser.role === 'mudir';
+                
                 html += `
                 <div class="bg-white text-gray-900 rounded-3xl p-6 flex gap-6 items-start border border-gray-900 task-card">
                     <div class="flex-1">
@@ -498,6 +512,12 @@
                             <span class="text-emerald-600">(${task.role})</span>
                         </div>
                     </div>
+                    
+                    ${canDelete ? `
+                    <button onclick="deleteTask(${task.id}); event.stopImmediatePropagation();" 
+                            class="flex-shrink-0 w-10 h-10 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-100 rounded-2xl transition-all">
+                        <i class="fa-solid fa-trash-can text-2xl"></i>
+                    </button>` : ''}
                 </div>`;
             });
             
@@ -516,8 +536,6 @@
         
         // Sayfa yüklendiğinde
         window.onload = function() {
-            initializeTailwind();
-            
             // Demo verisi (ilk açılışta)
             if (getTasks().length === 0) {
                 saveTasks([
@@ -531,8 +549,11 @@
                 ]);
             }
             
-            console.log('%c✅ Site başarıyla yüklendi! Tüm veriler localStorage\'da kalıcı olarak saklanıyor.', 'color:#10b981; font-size:13px');
+            console.log('%c✅ Site başarıyla yüklendi! Görev silme özelliği eklendi. Tüm veriler localStorage\'da kalıcı olarak saklanıyor.', 'color:#10b981; font-size:13px');
         };
     </script>
 </body>
 </html>
+    
+
+
