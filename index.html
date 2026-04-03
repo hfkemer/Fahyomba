@@ -55,10 +55,15 @@
         
         .modal { animation: modalPop 0.3s ease forwards; }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
-        /* Ekstra süsleme */
-        .hero-glow { box-shadow: 0 0 60px -10px rgb(16 185 129); }
-        .footer-name { background: linear-gradient(90deg, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Admin Paneli İçin Ekstra Stil */
+        .admin-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .admin-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -103,17 +108,14 @@
             </div>
             <form id="register-form" onsubmit="registerUser(event)">
                 <div class="space-y-6">
-                    <!-- Ad Soyad (sadece öğretmen) -->
                     <div id="reg-name-container">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
                         <input type="text" id="reg-name" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
-                    <!-- E-posta (herkes için) -->
                     <div>
                         <label id="reg-email-label" class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
                         <input type="email" id="reg-email" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
-                    <!-- Şifre (sadece öğretmen) -->
                     <div id="reg-password-container">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
                         <input type="password" id="reg-password" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
@@ -138,7 +140,6 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
                         <input type="text" id="login-name" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
-                    <!-- SADECE MÜDÜR İÇİN E-POSTA -->
                     <div id="extra-email-field" class="hidden">
                         <label class="block text-sm font-medium text-gray-700 mb-1">E-posta (bildirim için)</label>
                         <input type="email" id="login-email" class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
@@ -156,8 +157,6 @@
     <!-- ANA EKRAN -->
     <div id="dashboard-page" class="hidden min-h-screen navy-bg text-white page">
         <div class="max-w-7xl mx-auto px-8 py-8">
-            
-            <!-- Üst Bar -->
             <div class="flex items-center justify-between mb-10">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-4xl hero-glow">📋</div>
@@ -168,7 +167,6 @@
                 </div>
 
                 <div class="flex items-center gap-6">
-                    <!-- Bildirim Bell -->
                     <div id="notification-bell-container" class="hidden">
                         <div onclick="toggleNotifications()" class="relative cursor-pointer flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-3xl transition-all">
                             <i class="fa-solid fa-bell text-3xl"></i>
@@ -182,8 +180,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                <!-- Görev Ekleme -->
                 <div id="task-form-container" class="lg:col-span-5">
                     <div class="rotating-border bg-white text-gray-900 rounded-3xl p-8 task-card">
                         <div class="flex items-center gap-3 mb-6">
@@ -205,7 +201,6 @@
                     </div>
                 </div>
 
-                <!-- Görev Listesi -->
                 <div class="lg:col-span-7">
                     <div class="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/30">
                         <h3 class="text-3xl font-semibold mb-6 flex items-center gap-3"><i class="fa-solid fa-list-check"></i> Görevler</h3>
@@ -213,27 +208,57 @@
                     </div>
                 </div>
 
-                <!-- ADMIN KONTROL PANELİ -->
+                <!-- ADMIN KONTROL PANELİ (ÖZELLEŞTİRİLDİ) -->
                 <div id="admin-control-panel" class="lg:col-span-12 mt-8 hidden">
                     <div class="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/30">
-                        <h3 class="text-3xl font-semibold mb-8 flex items-center gap-3"><i class="fa-solid fa-chart-bar"></i> Admin Kontrol Paneli</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                            <div class="bg-white/10 rounded-3xl p-6 text-center">
-                                <p class="text-sm text-white/70">Toplam Kullanıcı</p>
-                                <p id="stat-users" class="text-6xl font-bold text-white mt-2">0</p>
-                            </div>
-                            <div class="bg-white/10 rounded-3xl p-6 text-center">
-                                <p class="text-sm text-white/70">Toplam Görev</p>
-                                <p id="stat-tasks" class="text-6xl font-bold text-white mt-2">0</p>
-                            </div>
-                            <div class="bg-white/10 rounded-3xl p-6 text-center">
-                                <p class="text-sm text-white/70">Bugün Tamamlanan</p>
-                                <p id="stat-done-today" class="text-6xl font-bold text-emerald-400 mt-2">0</p>
-                            </div>
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-3xl font-semibold flex items-center gap-3"><i class="fa-solid fa-chart-bar"></i> Admin Kontrol Paneli</h3>
+                            <button onclick="refreshAdminPanel()" class="flex items-center gap-2 text-sm font-medium px-5 py-2 bg-white/20 hover:bg-white/30 rounded-2xl transition-all">
+                                <i class="fa-solid fa-rotate"></i> Yenile
+                            </button>
                         </div>
                         
-                        <h4 class="text-xl font-semibold mb-4">Kayıtlı Kullanıcılar</h4>
+                        <!-- İstatistik Kartları -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+                            <div class="admin-card bg-white/10 rounded-3xl p-6 text-center">
+                                <i class="fa-solid fa-users text-4xl text-blue-400 mb-3"></i>
+                                <p class="text-sm text-white/70">Toplam Kullanıcı</p>
+                                <p id="stat-users" class="text-5xl font-bold text-white mt-1">0</p>
+                            </div>
+                            <div class="admin-card bg-white/10 rounded-3xl p-6 text-center">
+                                <i class="fa-solid fa-list-check text-4xl text-emerald-400 mb-3"></i>
+                                <p class="text-sm text-white/70">Toplam Görev</p>
+                                <p id="stat-tasks" class="text-5xl font-bold text-white mt-1">0</p>
+                            </div>
+                            <div class="admin-card bg-white/10 rounded-3xl p-6 text-center">
+                                <i class="fa-solid fa-circle-check text-4xl text-emerald-400 mb-3"></i>
+                                <p class="text-sm text-white/70">Tamamlanan</p>
+                                <p id="stat-done" class="text-5xl font-bold text-emerald-400 mt-1">0</p>
+                            </div>
+                            <div class="admin-card bg-white/10 rounded-3xl p-6 text-center">
+                                <i class="fa-solid fa-clock text-4xl text-amber-400 mb-3"></i>
+                                <p class="text-sm text-white/70">Bekleyen</p>
+                                <p id="stat-pending" class="text-5xl font-bold text-amber-400 mt-1">0</p>
+                            </div>
+                        </div>
+
+                        <!-- Tamamlanma Oranı -->
+                        <div class="mb-10 bg-white/10 rounded-3xl p-6">
+                            <div class="flex justify-between text-sm mb-3">
+                                <span class="font-medium">Genel Tamamlanma Oranı</span>
+                                <span id="completion-rate" class="font-bold text-emerald-400">0%</span>
+                            </div>
+                            <div class="h-3 bg-white/20 rounded-3xl overflow-hidden">
+                                <div id="completion-bar" class="h-full bg-emerald-400 rounded-3xl transition-all" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Son Aktiviteler -->
+                        <h4 class="text-xl font-semibold mb-4 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left"></i> Son Aktiviteler</h4>
+                        <div id="recent-activities" class="bg-white/10 rounded-3xl p-6 max-h-80 overflow-auto space-y-4"></div>
+
+                        <!-- Kullanıcı Listesi -->
+                        <h4 class="text-xl font-semibold mt-10 mb-4">Kayıtlı Kullanıcılar</h4>
                         <div id="users-list" class="bg-white/10 rounded-3xl p-6 max-h-96 overflow-auto"></div>
                     </div>
                 </div>
@@ -299,7 +324,6 @@
         const ADMIN_HASH = "0b26b401a221183cab7cbe06c081091cfb5eee0d4d3c53ae14d7ab254bb32588";
         const MUDIR_HASH = "e4e9220187619d88436de036f7e31d2f6baca7d9e8225c9fdc752691ad9492a0";
 
-        // ====================== EMAIL ======================
         function initEmailJS() { console.log("%c📧 EmailJS hazır", "color:#10b981"); }
         function sendEmail(to, subject, message) {
             console.log(`📧 EMAIL → ${to} | ${subject}`);
@@ -363,7 +387,9 @@
         }
 
         function showLoginAfterRegister() {
+            document.getElementById('register-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
+            
             document.getElementById('login-title').innerHTML = 
                 currentRole === 'mudir' ? 'Müdür Girişi' : 
                 (currentRole === 'admin' ? 'Admin Girişi' : 'Öğretmen Girişi');
@@ -407,7 +433,7 @@
                 document.getElementById('dashboard-page').classList.remove('hidden');
                 loadDashboard();
             } else {
-                alert('❌ Hatalı ad veya şifre! (Kopyala-yapıştır da deneyin)');
+                alert('❌ Hatalı ad veya şifre!');
             }
         }
 
@@ -442,11 +468,9 @@
                 document.getElementById('form-user-name').innerHTML = `<span class="font-medium">${currentUser.name}</span> tarafından ekleniyor`;
             }
 
-            // Bildirim bell
             const bellContainer = document.getElementById('notification-bell-container');
             bellContainer.classList.toggle('hidden', !(currentUser.role === 'mudir' || currentUser.role === 'admin'));
 
-            // Admin Kontrol Paneli
             const adminPanel = document.getElementById('admin-control-panel');
             adminPanel.classList.toggle('hidden', currentUser.role !== 'admin');
             
@@ -456,25 +480,61 @@
             renderTaskList();
         }
 
-        // ====================== ADMIN KONTROL PANELİ ======================
+        // ====================== ADMIN KONTROL PANELİ (ÖZELLEŞTİRİLDİ) ======================
         function renderAdminControlPanel() {
             const users = getUsers();
             const tasks = getTasks();
             
-            document.getElementById('stat-users').textContent = users.length + 2; // +2 hardcoded admin/müdür
+            // Temel istatistikler
+            document.getElementById('stat-users').textContent = users.length + 2;
             document.getElementById('stat-tasks').textContent = tasks.length;
             
-            // Bugün tamamlanan (basit simülasyon)
-            const doneToday = tasks.filter(t => t.status === 'done').length;
-            document.getElementById('stat-done-today').textContent = doneToday;
+            const doneCount = tasks.filter(t => t.status === 'done').length;
+            document.getElementById('stat-done').textContent = doneCount;
+            
+            const pendingCount = tasks.filter(t => !t.status).length;
+            document.getElementById('stat-pending').textContent = pendingCount;
+            
+            // Tamamlanma oranı
+            const completionRate = tasks.length > 0 ? Math.round((doneCount / tasks.length) * 100) : 0;
+            document.getElementById('completion-rate').textContent = completionRate + '%';
+            document.getElementById('completion-bar').style.width = completionRate + '%';
+            
+            // Son aktiviteler (son 5 görev)
+            let activityHTML = '';
+            const recentTasks = [...tasks].slice(0, 5);
+            recentTasks.forEach(task => {
+                const statusIcon = task.status === 'done' ? '✅' : (task.status === 'failed' ? '❌' : '⏳');
+                activityHTML += `
+                <div class="flex items-center gap-4 bg-white/5 rounded-2xl p-4">
+                    <span class="text-3xl">${statusIcon}</span>
+                    <div class="flex-1">
+                        <p class="font-medium">${task.text}</p>
+                        <p class="text-xs text-white/60">${task.addedBy} • ${task.date}</p>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('recent-activities').innerHTML = activityHTML || `<p class="text-white/60 text-center py-8">Henüz aktivite yok...</p>`;
             
             // Kullanıcı listesi
-            let html = `<div class="space-y-3">`;
+            let userHTML = `<div class="space-y-3">`;
             users.forEach(u => {
-                html += `<div class="flex justify-between bg-white/10 rounded-2xl p-4 text-white"><span>${u.name} (${u.role})</span><span class="text-emerald-400">${u.email || '-'}</span></div>`;
+                userHTML += `<div class="flex justify-between bg-white/10 rounded-2xl p-4 text-white"><span>${u.name} (${u.role})</span><span class="text-emerald-400">${u.email || '-'}</span></div>`;
             });
-            html += `</div>`;
-            document.getElementById('users-list').innerHTML = html;
+            userHTML += `</div>`;
+            document.getElementById('users-list').innerHTML = userHTML;
+        }
+
+        // ====================== ADMIN PANELİ YENİLEME ======================
+        function refreshAdminPanel() {
+            if (currentUser && currentUser.role === 'admin') {
+                renderAdminControlPanel();
+                const notif = document.createElement('div');
+                notif.className = 'fixed bottom-8 right-8 bg-emerald-600 text-white px-6 py-3 rounded-3xl shadow-2xl';
+                notif.innerHTML = '✅ Panel yenilendi';
+                document.body.appendChild(notif);
+                setTimeout(() => notif.remove(), 2000);
+            }
         }
 
         // ====================== BİLDİRİM ======================
@@ -489,8 +549,14 @@
 
         function toggleNotifications() {
             const panel = document.getElementById('notifications-panel');
-            panel.classList.toggle('hidden');
-            if (!panel.classList.contains('hidden')) renderNotifications();
+            if (panel.classList.contains('hidden')) {
+                renderNotifications();
+                panel.classList.remove('hidden');
+            } else {
+                saveNotifications([]);
+                updateNotificationCount();
+                panel.classList.add('hidden');
+            }
         }
 
         function renderNotifications() {
@@ -680,7 +746,7 @@
             
             const isLoggedIn = checkPersistentLogin();
             if (!isLoggedIn) {
-                console.log('%c✅ H.f Görev Sistemi yüklendi! Admin: hfkysd.53 / 53hy53.1453 (güvenli hash ile)', 'color:#10b981; font-size:13px');
+                console.log('%c✅ H.f Görev Sistemi yüklendi! Admin paneli özelleştirildi ve kod optimize edildi.', 'color:#10b981; font-size:13px');
             }
         };
     </script>
