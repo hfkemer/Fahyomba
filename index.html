@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Görev Yönetim Sistemi</title>
+    <title>H.f Görev Sistemi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap');
         
         body { font-family: 'Inter', sans-serif; }
+        .title-font { font-family: 'Space Grotesk', sans-serif; }
         
         .modern-input {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -54,34 +55,42 @@
         
         .modal { animation: modalPop 0.3s ease forwards; }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        /* Ekstra süsleme */
+        .hero-glow { box-shadow: 0 0 60px -10px rgb(16 185 129); }
+        .footer-name { background: linear-gradient(90deg, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <!-- ROL SEÇİM SAYFASI -->
     <div id="role-page" class="min-h-screen silver-bg flex items-center justify-center page">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-bold text-gray-900 mb-3 tracking-tight">Hoş Geldin!</h1>
-                <p class="text-xl text-gray-700">Lütfen rolünü seç</p>
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <div class="mb-10">
+                <h1 class="title-font text-6xl font-bold text-gray-900 tracking-tighter mb-2">H.f</h1>
+                <p class="text-3xl font-medium text-gray-800">Görev Yönetim Sistemi</p>
+                <p class="text-xl text-gray-600 mt-3">Profesyonel • Güvenli • Kolay</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div onclick="selectRole('admin')" class="cursor-pointer bg-white rounded-3xl shadow-2xl p-8 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-gray-900 group">
-                    <div class="flex justify-center mb-6"><i class="fa-solid fa-shield-halved text-7xl text-amber-600 group-hover:rotate-12 transition-transform"></i></div>
-                    <h3 class="text-3xl font-semibold text-center text-gray-900 mb-2">Admin</h3>
-                    <p class="text-center text-gray-500">Sistem yöneticisi</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div onclick="selectRole('admin')" class="cursor-pointer bg-white rounded-3xl shadow-2xl p-10 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-amber-500 group hero-glow">
+                    <div class="flex justify-center mb-6"><i class="fa-solid fa-shield-halved text-8xl text-amber-600 group-hover:rotate-12 transition-transform"></i></div>
+                    <h3 class="text-4xl font-semibold text-center text-gray-900 mb-3">Admin</h3>
+                    <p class="text-center text-gray-500 text-lg">Tam kontrol • Güvenli giriş</p>
                 </div>
-                <div onclick="selectRole('mudir')" class="cursor-pointer bg-white rounded-3xl shadow-2xl p-8 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-gray-900 group">
-                    <div class="flex justify-center mb-6"><i class="fa-solid fa-user-tie text-7xl text-blue-700 group-hover:rotate-12 transition-transform"></i></div>
-                    <h3 class="text-3xl font-semibold text-center text-gray-900 mb-2">Müdür</h3>
-                    <p class="text-center text-gray-500">Görev atayan</p>
+                <div onclick="selectRole('mudir')" class="cursor-pointer bg-white rounded-3xl shadow-2xl p-10 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-blue-500 group hero-glow">
+                    <div class="flex justify-center mb-6"><i class="fa-solid fa-user-tie text-8xl text-blue-700 group-hover:rotate-12 transition-transform"></i></div>
+                    <h3 class="text-4xl font-semibold text-center text-gray-900 mb-3">Müdür</h3>
+                    <p class="text-center text-gray-500 text-lg">Görev ata • Bildirim al</p>
                 </div>
-                <div onclick="selectRole('ogretmen')" class="cursor-pointer bg-white rounded-3xl shadow-2xl p-8 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-gray-900 group">
-                    <div class="flex justify-center mb-6"><i class="fa-solid fa-chalkboard-teacher text-7xl text-emerald-600 group-hover:rotate-12 transition-transform"></i></div>
-                    <h3 class="text-3xl font-semibold text-center text-gray-900 mb-2">Öğretmen</h3>
-                    <p class="text-center text-gray-500">Sadece görüntüleme</p>
+                <div onclick="selectRole('ogretmen')" class="cursor-pointer bg-white rounded-3xl shadow-2xl p-10 hover:scale-105 transition-all duration-300 border-2 border-transparent hover:border-emerald-500 group hero-glow">
+                    <div class="flex justify-center mb-6"><i class="fa-solid fa-chalkboard-teacher text-8xl text-emerald-600 group-hover:rotate-12 transition-transform"></i></div>
+                    <h3 class="text-4xl font-semibold text-center text-gray-900 mb-3">Öğretmen</h3>
+                    <p class="text-center text-gray-500 text-lg">Görevleri gör • Fotoğrafla tamamla</p>
                 </div>
             </div>
+            
+            <div class="mt-16 text-xs text-gray-400 footer-name">H.f Görev Sistemi © 2026 • Tüm hakları saklıdır</div>
         </div>
     </div>
 
@@ -94,17 +103,17 @@
             </div>
             <form id="register-form" onsubmit="registerUser(event)">
                 <div class="space-y-6">
-                    <!-- Ad Soyad (sadece öğretmen için) -->
+                    <!-- Ad Soyad (sadece öğretmen) -->
                     <div id="reg-name-container">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
                         <input type="text" id="reg-name" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
-                    <!-- E-posta -->
+                    <!-- E-posta (herkes için) -->
                     <div>
                         <label id="reg-email-label" class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
                         <input type="email" id="reg-email" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
-                    <!-- Şifre (sadece öğretmen için) -->
+                    <!-- Şifre (sadece öğretmen) -->
                     <div id="reg-password-container">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
                         <input type="password" id="reg-password" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
@@ -112,7 +121,7 @@
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 rounded-2xl text-xl transition-all">Kayıt Ol</button>
                 </div>
             </form>
-            <p onclick="showLoginAfterRegister()" class="text-center text-sm text-gray-500 mt-6 cursor-pointer hover:text-gray-700">Zaten hesabın var mı? Giriş yap</p>
+            <p onclick="showLoginAfterRegister()" class="text-center text-sm text-gray-500 mt-6 cursor-pointer hover:text-gray-700">Zaten hesabın var mı? <span class="font-semibold text-emerald-600">Giriş yap</span></p>
         </div>
     </div>
 
@@ -129,14 +138,14 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
                         <input type="text" id="login-name" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
-                    <!-- SADECE MÜDÜR İÇİN E-POSTA ALANI -->
+                    <!-- SADECE MÜDÜR İÇİN E-POSTA -->
                     <div id="extra-email-field" class="hidden">
                         <label class="block text-sm font-medium text-gray-700 mb-1">E-posta (bildirim için)</label>
                         <input type="email" id="login-email" class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
-                        <input type="password" id="login-password" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
+                        <input type="password" id="login-password" autocomplete="off" required class="modern-input w-full px-5 py-4 bg-gray-100 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
                     </div>
                     <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-semibold py-4 rounded-2xl text-xl transition-all">Giriş Yap</button>
                 </div>
@@ -147,44 +156,49 @@
     <!-- ANA EKRAN -->
     <div id="dashboard-page" class="hidden min-h-screen navy-bg text-white page">
         <div class="max-w-7xl mx-auto px-8 py-8">
+            
+            <!-- Üst Bar -->
             <div class="flex items-center justify-between mb-10">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl">📋</div>
+                    <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-4xl hero-glow">📋</div>
                     <div>
-                        <h1 class="text-4xl font-semibold">Görev Paneli</h1>
-                        <p id="user-info" class="text-white/70 text-lg"></p>
+                        <h1 class="title-font text-5xl font-semibold tracking-tighter">H.f Görev Paneli</h1>
+                        <p id="user-info" class="text-white/70 text-xl"></p>
                     </div>
                 </div>
 
-                <!-- Bildirim Bell (sadece Müdür ve Admin için) -->
-                <div id="notification-bell-container" class="flex items-center gap-6">
-                    <div id="notification-bell" onclick="toggleNotifications()" class="relative cursor-pointer hidden flex items-center justify-center w-11 h-11 bg-white/10 hover:bg-white/20 rounded-2xl transition-all">
-                        <i class="fa-solid fa-bell text-3xl"></i>
-                        <span id="notification-count" class="absolute -top-1 -right-1 bg-red-500 text-[10px] font-bold text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">0</span>
+                <div class="flex items-center gap-6">
+                    <!-- Bildirim Bell -->
+                    <div id="notification-bell-container" class="hidden">
+                        <div onclick="toggleNotifications()" class="relative cursor-pointer flex items-center justify-center w-12 h-12 bg-white/10 hover:bg-white/20 rounded-3xl transition-all">
+                            <i class="fa-solid fa-bell text-3xl"></i>
+                            <span id="notification-count" class="absolute -top-1 -right-1 bg-red-500 text-xs font-bold text-white rounded-full min-w-[20px] h-[20px] flex items-center justify-center">0</span>
+                        </div>
                     </div>
-                    <button onclick="logout()" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-6 py-3 rounded-2xl text-sm font-medium transition-all">
-                        <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+                    <button onclick="logout()" class="flex items-center gap-3 bg-white/10 hover:bg-white/20 px-8 py-4 rounded-3xl text-sm font-medium transition-all">
+                        <i class="fa-solid fa-right-from-bracket"></i> Çıkış
                     </button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Görev ekleme -->
+                
+                <!-- Görev Ekleme -->
                 <div id="task-form-container" class="lg:col-span-5">
                     <div class="rotating-border bg-white text-gray-900 rounded-3xl p-8 task-card">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-2xl text-sm font-semibold flex items-center"><i class="fa-solid fa-plus mr-2"></i>YENİ GÖREV</div>
-                            <p id="form-user-name" class="text-lg font-medium"></p>
+                            <div class="px-6 py-3 bg-emerald-100 text-emerald-700 rounded-3xl text-sm font-semibold flex items-center"><i class="fa-solid fa-plus mr-2"></i>YENİ GÖREV</div>
+                            <p id="form-user-name" class="text-xl font-medium"></p>
                         </div>
                         <form id="task-form" onsubmit="addTask(event)">
-                            <textarea id="task-text" rows="3" class="w-full px-5 py-4 border-2 border-gray-900 rounded-2xl text-lg resize-none focus:outline-none" placeholder="Görev açıklamasını yaz..."></textarea>
-                            <div class="mt-6 grid grid-cols-2 gap-4">
+                            <textarea id="task-text" rows="3" class="w-full px-6 py-5 border-2 border-gray-900 rounded-3xl text-lg resize-none focus:outline-none" placeholder="Görev açıklamasını yaz..."></textarea>
+                            <div class="mt-8 grid grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm text-gray-500 mb-2">Tarih</label>
-                                    <input type="date" id="task-date" required class="w-full px-5 py-4 border-2 border-gray-900 rounded-2xl text-lg focus:outline-none">
+                                    <input type="date" id="task-date" required class="w-full px-6 py-5 border-2 border-gray-900 rounded-3xl text-lg focus:outline-none">
                                 </div>
                                 <div class="flex items-end">
-                                    <button type="submit" class="w-full bg-gray-900 text-white py-4 rounded-2xl text-xl font-semibold hover:bg-black transition-all">Görevi Ekle</button>
+                                    <button type="submit" class="w-full bg-gray-900 text-white py-5 rounded-3xl text-2xl font-semibold hover:bg-black transition-all">Göreve Ekle</button>
                                 </div>
                             </div>
                         </form>
@@ -193,9 +207,34 @@
 
                 <!-- Görev Listesi -->
                 <div class="lg:col-span-7">
-                    <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/30">
-                        <h3 class="text-2xl font-semibold mb-6 flex items-center gap-3"><i class="fa-solid fa-list-check"></i> Görevler</h3>
-                        <div id="task-list" class="space-y-4 max-h-[560px] overflow-auto pr-2"></div>
+                    <div class="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/30">
+                        <h3 class="text-3xl font-semibold mb-6 flex items-center gap-3"><i class="fa-solid fa-list-check"></i> Görevler</h3>
+                        <div id="task-list" class="space-y-4 max-h-[520px] overflow-auto pr-2"></div>
+                    </div>
+                </div>
+
+                <!-- ADMIN KONTROL PANELİ -->
+                <div id="admin-control-panel" class="lg:col-span-12 mt-8 hidden">
+                    <div class="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/30">
+                        <h3 class="text-3xl font-semibold mb-8 flex items-center gap-3"><i class="fa-solid fa-chart-bar"></i> Admin Kontrol Paneli</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                            <div class="bg-white/10 rounded-3xl p-6 text-center">
+                                <p class="text-sm text-white/70">Toplam Kullanıcı</p>
+                                <p id="stat-users" class="text-6xl font-bold text-white mt-2">0</p>
+                            </div>
+                            <div class="bg-white/10 rounded-3xl p-6 text-center">
+                                <p class="text-sm text-white/70">Toplam Görev</p>
+                                <p id="stat-tasks" class="text-6xl font-bold text-white mt-2">0</p>
+                            </div>
+                            <div class="bg-white/10 rounded-3xl p-6 text-center">
+                                <p class="text-sm text-white/70">Bugün Tamamlanan</p>
+                                <p id="stat-done-today" class="text-6xl font-bold text-emerald-400 mt-2">0</p>
+                            </div>
+                        </div>
+                        
+                        <h4 class="text-xl font-semibold mb-4">Kayıtlı Kullanıcılar</h4>
+                        <div id="users-list" class="bg-white/10 rounded-3xl p-6 max-h-96 overflow-auto"></div>
                     </div>
                 </div>
             </div>
@@ -211,22 +250,22 @@
                 <div class="space-y-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Görev Açıklaması</label>
-                        <textarea id="edit-text" rows="3" class="w-full px-5 py-4 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none"></textarea>
+                        <textarea id="edit-text" rows="3" class="w-full px-5 py-4 border-2 border-gray-300 rounded-3xl focus:border-gray-900 text-lg outline-none"></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Tarih</label>
-                        <input type="date" id="edit-date" class="w-full px-5 py-4 border-2 border-gray-300 rounded-2xl focus:border-gray-900 text-lg outline-none">
+                        <input type="date" id="edit-date" class="w-full px-5 py-4 border-2 border-gray-300 rounded-3xl focus:border-gray-900 text-lg outline-none">
                     </div>
                     <div class="flex gap-4">
-                        <button type="button" onclick="closeEditModal()" class="flex-1 py-4 text-gray-500 font-medium rounded-2xl border-2 border-gray-300">İptal</button>
-                        <button type="submit" class="flex-1 py-4 bg-gray-900 text-white font-semibold rounded-2xl">Kaydet</button>
+                        <button type="button" onclick="closeEditModal()" class="flex-1 py-4 text-gray-500 font-medium rounded-3xl border-2 border-gray-300">İptal</button>
+                        <button type="submit" class="flex-1 py-4 bg-gray-900 text-white font-semibold rounded-3xl">Kaydet</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Bildirim Paneli (Müdür için) -->
+    <!-- Bildirim Paneli -->
     <div id="notifications-panel" onclick="if(event.target.id === 'notifications-panel') toggleNotifications()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
         <div onclick="event.stopImmediatePropagation()" class="modal bg-white text-gray-900 rounded-3xl p-8 w-full max-w-lg mx-4 max-h-[80vh] overflow-auto">
             <div class="flex justify-between items-center mb-6">
@@ -238,7 +277,7 @@
     </div>
 
     <script>
-        // ====================== VERİ GÜVENLİĞİ ======================
+        // ====================== VERİ GÜVENLİĞİ & HASH ======================
         const SECRET_KEY = "gorevSistemi2026SuperSecret";
         function encrypt(data) { return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString(); }
         function decrypt(encrypted) {
@@ -254,19 +293,16 @@
         function saveCurrentUser(user) { localStorage.setItem('currentUser', JSON.stringify(user)); }
         function getCurrentUser() { const str = localStorage.getItem('currentUser'); return str ? JSON.parse(str) : null; }
 
-        // ====================== GÜVENLİ ŞİFRE KARŞILAŞTIRMA (Admin + Müdür) ======================
         function hashPassword(password) {
-            return CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+            return CryptoJS.SHA256(password.trim()).toString(CryptoJS.enc.Hex);
         }
-        // === GÜNCELLENDİ ===
-        // Admin: ad = hfkysd.53    şifre = 53hy53.1453
         const ADMIN_HASH = "0b26b401a221183cab7cbe06c081091cfb5eee0d4d3c53ae14d7ab254bb32588";
         const MUDIR_HASH = "e4e9220187619d88436de036f7e31d2f6baca7d9e8225c9fdc752691ad9492a0";
 
-        // ====================== EMAIL (KONSOL + GERÇEK BİLDİRİM) ======================
+        // ====================== EMAIL ======================
         function initEmailJS() { console.log("%c📧 EmailJS hazır", "color:#10b981"); }
         function sendEmail(to, subject, message) {
-            console.log(`📧 EMAIL GÖNDERİLDİ → ${to} | ${subject} | ${message}`);
+            console.log(`📧 EMAIL → ${to} | ${subject}`);
         }
 
         let currentUser = null;
@@ -291,9 +327,6 @@
             const isMudir = currentRole === 'mudir';
             document.getElementById('reg-name-container').classList.toggle('hidden', isMudir);
             document.getElementById('reg-password-container').classList.toggle('hidden', isMudir);
-            document.getElementById('reg-email-label').innerHTML = isMudir 
-                ? 'E-posta (bildirim için)' 
-                : 'E-posta';
         }
 
         function backToRole() {
@@ -330,9 +363,7 @@
         }
 
         function showLoginAfterRegister() {
-            document.getElementById('register-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
-            
             document.getElementById('login-title').innerHTML = 
                 currentRole === 'mudir' ? 'Müdür Girişi' : 
                 (currentRole === 'admin' ? 'Admin Girişi' : 'Öğretmen Girişi');
@@ -345,17 +376,12 @@
             e.preventDefault();
             const name = document.getElementById('login-name').value.trim();
             const password = document.getElementById('login-password').value.trim();
-            let email = null;
-            
-            if (currentRole === 'mudir') {
-                email = document.getElementById('login-email').value.trim();
-            }
+            let email = currentRole === 'mudir' ? document.getElementById('login-email').value.trim() : null;
 
             let isValid = false;
             let currentUserData = null;
 
             if (currentRole === 'admin') {
-                // Admin girişi (hfkysd.53 / 53hy53.1453)
                 if (name === 'hfkysd.53' && hashPassword(password) === ADMIN_HASH) {
                     isValid = true;
                     currentUserData = { name: 'hfkysd.53', role: 'admin' };
@@ -381,7 +407,7 @@
                 document.getElementById('dashboard-page').classList.remove('hidden');
                 loadDashboard();
             } else {
-                alert('❌ Hatalı ad veya şifre!');
+                alert('❌ Hatalı ad veya şifre! (Kopyala-yapıştır da deneyin)');
             }
         }
 
@@ -410,22 +436,48 @@
             document.getElementById('user-info').innerHTML = `<span class="capitalize">${currentUser.role}</span> • <span class="font-medium">${currentUser.name}</span>`;
             
             const formContainer = document.getElementById('task-form-container');
-            formContainer.style.display = (currentUser.role === 'ogretmen') ? 'none' : 'block';
+            formContainer.style.display = currentUser.role === 'ogretmen' ? 'none' : 'block';
             
             if (formContainer.style.display !== 'none') {
                 document.getElementById('form-user-name').innerHTML = `<span class="font-medium">${currentUser.name}</span> tarafından ekleniyor`;
             }
 
-            const bell = document.getElementById('notification-bell');
-            if (bell) {
-                bell.classList.toggle('hidden', !(currentUser.role === 'mudir' || currentUser.role === 'admin'));
-            }
+            // Bildirim bell
+            const bellContainer = document.getElementById('notification-bell-container');
+            bellContainer.classList.toggle('hidden', !(currentUser.role === 'mudir' || currentUser.role === 'admin'));
+
+            // Admin Kontrol Paneli
+            const adminPanel = document.getElementById('admin-control-panel');
+            adminPanel.classList.toggle('hidden', currentUser.role !== 'admin');
+            
+            if (currentUser.role === 'admin') renderAdminControlPanel();
             
             updateNotificationCount();
             renderTaskList();
         }
 
-        // ====================== BİLDİRİM SİSTEMİ ======================
+        // ====================== ADMIN KONTROL PANELİ ======================
+        function renderAdminControlPanel() {
+            const users = getUsers();
+            const tasks = getTasks();
+            
+            document.getElementById('stat-users').textContent = users.length + 2; // +2 hardcoded admin/müdür
+            document.getElementById('stat-tasks').textContent = tasks.length;
+            
+            // Bugün tamamlanan (basit simülasyon)
+            const doneToday = tasks.filter(t => t.status === 'done').length;
+            document.getElementById('stat-done-today').textContent = doneToday;
+            
+            // Kullanıcı listesi
+            let html = `<div class="space-y-3">`;
+            users.forEach(u => {
+                html += `<div class="flex justify-between bg-white/10 rounded-2xl p-4 text-white"><span>${u.name} (${u.role})</span><span class="text-emerald-400">${u.email || '-'}</span></div>`;
+            });
+            html += `</div>`;
+            document.getElementById('users-list').innerHTML = html;
+        }
+
+        // ====================== BİLDİRİM ======================
         function updateNotificationCount() {
             if (!currentUser || !(currentUser.role === 'mudir' || currentUser.role === 'admin')) return;
             const countEl = document.getElementById('notification-count');
@@ -437,87 +489,48 @@
 
         function toggleNotifications() {
             const panel = document.getElementById('notifications-panel');
-            const list = document.getElementById('notifications-list');
-            
-            if (panel.classList.contains('hidden')) {
-                renderNotifications();
-                panel.classList.remove('hidden');
-            } else {
-                panel.classList.add('hidden');
-            }
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) renderNotifications();
         }
 
         function renderNotifications() {
             const listEl = document.getElementById('notifications-list');
             const notifs = getNotifications();
-            
             if (notifs.length === 0) {
-                listEl.innerHTML = `
-                    <div class="text-center py-12 text-gray-400">
-                        <i class="fa-solid fa-inbox text-6xl mb-4"></i>
-                        <p class="text-xl">Henüz bildirim yok...</p>
-                    </div>`;
+                listEl.innerHTML = `<div class="text-center py-12 text-gray-400"><i class="fa-solid fa-inbox text-6xl mb-4"></i><p>Henüz bildirim yok...</p></div>`;
                 return;
             }
-            
             let html = '';
             notifs.forEach(n => {
-                html += `
-                <div class="bg-gray-100 rounded-3xl p-5 flex gap-4 items-start">
-                    <div class="text-4xl flex-shrink-0">${n.type === 'done' ? '✅' : '❌'}</div>
-                    <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-lg">${n.title}</p>
-                        <p class="text-gray-600 text-sm mt-1 line-clamp-2">${n.message}</p>
-                        <div class="flex justify-between text-xs text-gray-500 mt-3">
-                            <span>Öğretmen: <strong>${n.teacher}</strong></span>
-                            <span>${n.date}</span>
-                        </div>
-                    </div>
-                </div>`;
+                html += `<div class="bg-gray-100 rounded-3xl p-5 flex gap-4"><div class="text-5xl">${n.type === 'done' ? '✅' : '❌'}</div><div class="flex-1"><p class="font-semibold">${n.title}</p><p class="text-gray-600">${n.message}</p><div class="text-xs text-gray-500 mt-2">${n.teacher} • ${n.date}</div></div></div>`;
             });
             listEl.innerHTML = html;
         }
 
-        // ====================== GÖREV EKLE ======================
+        // ====================== GÖREV İŞLEMLERİ ======================
         function addTask(e) {
             e.preventDefault();
             if (currentUser.role === 'ogretmen') return;
-            
             const text = document.getElementById('task-text').value.trim();
             const date = document.getElementById('task-date').value;
             if (!text || !date) return;
             
             const tasks = getTasks();
-            tasks.unshift({ 
-                id: Date.now(), 
-                text, 
-                date, 
-                addedBy: currentUser.name, 
-                role: currentUser.role, 
-                status: null, 
-                photo: null 
-            });
+            tasks.unshift({ id: Date.now(), text, date, addedBy: currentUser.name, role: currentUser.role, status: null, photo: null });
             saveTasks(tasks);
-            
             document.getElementById('task-form').reset();
             renderTaskList();
             
             if (currentUser.role === 'mudir' || currentUser.role === 'admin') {
                 const users = getUsers();
-                users.forEach(u => {
-                    if (u.role === 'ogretmen' && u.email) {
-                        sendEmail(u.email, "Yeni Görev Atandı!", `Merhaba ${u.name}, yeni görev: ${text} - Tarih: ${date}`);
-                    }
-                });
+                users.forEach(u => { if (u.role === 'ogretmen' && u.email) sendEmail(u.email, "Yeni Görev Atandı!", `Merhaba ${u.name}, yeni görev: ${text}`); });
             }
         }
 
         function deleteTask(id) {
-            if (!confirm('Bu görevi kalıcı olarak silmek istediğinden emin misin?')) return;
-            
+            if (!confirm('Bu görevi silmek istediğinden emin misin?')) return;
             const el = document.querySelector(`[data-task-id="${id}"]`);
             if (el) el.classList.add('deleting');
-            
             setTimeout(() => {
                 let tasks = getTasks();
                 tasks = tasks.filter(t => t.id !== id);
@@ -530,7 +543,6 @@
             const tasks = getTasks();
             const task = tasks.find(t => t.id === id);
             if (!task) return;
-            
             document.getElementById('edit-id').value = task.id;
             document.getElementById('edit-text').value = task.text;
             document.getElementById('edit-date').value = task.date;
@@ -542,22 +554,14 @@
             const id = parseInt(document.getElementById('edit-id').value);
             const newText = document.getElementById('edit-text').value.trim();
             const newDate = document.getElementById('edit-date').value;
-            
             let tasks = getTasks();
             const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.text = newText;
-                task.date = newDate;
-                saveTasks(tasks);
-            }
-            
+            if (task) { task.text = newText; task.date = newDate; saveTasks(tasks); }
             closeEditModal();
             renderTaskList();
         }
 
-        function closeEditModal() {
-            document.getElementById('edit-modal').classList.add('hidden');
-        }
+        function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 
         function uploadPhoto(id, file) {
             if (!file) return;
@@ -565,47 +569,26 @@
             reader.onload = function(e) {
                 let tasks = getTasks();
                 const task = tasks.find(t => t.id === id);
-                if (task) {
-                    task.photo = e.target.result;
-                    saveTasks(tasks);
-                    renderTaskList();
-                }
+                if (task) { task.photo = e.target.result; saveTasks(tasks); renderTaskList(); }
             };
             reader.readAsDataURL(file);
         }
 
         function markTask(id, status) {
             if (currentUser.role !== 'ogretmen') return;
-            
             let tasks = getTasks();
             const task = tasks.find(t => t.id === id);
-            
             if (task && task.photo) {
                 task.status = status;
                 saveTasks(tasks);
                 
                 let notifs = getNotifications();
-                notifs.unshift({
-                    id: Date.now(),
-                    type: status,
-                    title: status === 'done' ? '✅ Görev Tamamlandı' : '❌ Görev Yapılamadı',
-                    message: task.text,
-                    date: new Date().toLocaleString('tr-TR'),
-                    teacher: currentUser.name,
-                    taskId: id
-                });
+                notifs.unshift({ id: Date.now(), type: status, title: status === 'done' ? '✅ Görev Tamamlandı' : '❌ Görev Yapılamadı', message: task.text, date: new Date().toLocaleString('tr-TR'), teacher: currentUser.name });
                 saveNotifications(notifs);
                 
-                sendEmail(
-                    currentUser.email || 'mudur@example.com',
-                    status === 'done' ? "Görev Tamamlandı ✅" : "Görev Yapılamadı ❌",
-                    `Görev: ${task.text}\nTarih: ${task.date}\nDurum: ${status === 'done' ? 'Tamamlandı' : 'Yapılmadı'}\nFotoğraf eklendi.`
-                );
+                sendEmail(currentUser.email || 'mudur@example.com', status === 'done' ? "Görev Tamamlandı ✅" : "Görev Yapılamadı ❌", task.text);
                 
-                alert(status === 'done' 
-                    ? '✅ Görev tamamlandı! Müdür\'e e-posta ve bildirim gönderildi.' 
-                    : '❌ Görev işaretlendi! Müdür\'e bildirim gönderildi.');
-                
+                alert(status === 'done' ? '✅ Görev tamamlandı! Müdür\'e bildirim gönderildi.' : '❌ Görev işaretlendi!');
                 updateNotificationCount();
                 renderTaskList();
             }
@@ -614,7 +597,6 @@
         function renderTaskList() {
             const container = document.getElementById('task-list');
             const tasks = getTasks();
-            
             if (tasks.length === 0) {
                 container.innerHTML = `<div class="bg-white/5 text-white/60 text-center py-16 rounded-3xl"><i class="fa-solid fa-inbox text-6xl mb-4"></i><p class="text-xl">Henüz görev yok...</p></div>`;
                 return;
@@ -629,19 +611,15 @@
                     if (!task.status) {
                         statusHTML = `
                         <div class="mt-4 border-t pt-4">
-                            <label class="block text-xs text-white/70 font-medium mb-2">📸 Görevi yaptığını kanıtlamak için fotoğraf yükle</label>
+                            <label class="block text-xs text-white/70 font-medium mb-2">📸 Fotoğraf yükle</label>
                             <input type="file" accept="image/*" onchange="uploadPhoto(${task.id}, this.files[0])" class="text-white text-sm w-full">
-                            ${task.photo ? `<img src="${task.photo}" class="mt-3 w-28 h-28 object-cover rounded-2xl border border-white/30 shadow-inner">` : '<p class="text-white/40 text-xs mt-2">Fotoğraf yüklenmedi</p>'}
+                            ${task.photo ? `<img src="${task.photo}" class="mt-3 w-28 h-28 object-cover rounded-2xl border border-white/30">` : ''}
                         </div>`;
                         if (task.photo) {
                             statusHTML += `
                             <div class="flex gap-4 mt-4">
-                                <button onclick="markTask(${task.id}, 'done')" class="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 py-4 rounded-2xl text-white font-semibold text-lg">
-                                    <i class="fa-solid fa-check text-3xl"></i> TAMAMLANDI
-                                </button>
-                                <button onclick="markTask(${task.id}, 'failed')" class="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 py-4 rounded-2xl text-white font-semibold text-lg">
-                                    <i class="fa-solid fa-xmark text-3xl"></i> YAPILAMADI
-                                </button>
+                                <button onclick="markTask(${task.id}, 'done')" class="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 py-4 rounded-3xl text-white font-semibold text-lg"><i class="fa-solid fa-check text-3xl"></i> TAMAMLANDI</button>
+                                <button onclick="markTask(${task.id}, 'failed')" class="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 py-4 rounded-3xl text-white font-semibold text-lg"><i class="fa-solid fa-xmark text-3xl"></i> YAPILAMADI</button>
                             </div>`;
                         }
                     } else {
@@ -675,8 +653,8 @@
                         </div>
                         ${canEditDelete ? `
                         <div class="flex flex-col gap-2">
-                            <button onclick="editTask(${task.id}); event.stopImmediatePropagation()" class="w-9 h-9 flex items-center justify-center text-amber-500 hover:text-amber-700 hover:bg-amber-100 rounded-2xl transition-all"><i class="fa-solid fa-pen text-xl"></i></button>
-                            <button onclick="deleteTask(${task.id}); event.stopImmediatePropagation()" class="w-9 h-9 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-100 rounded-2xl transition-all"><i class="fa-solid fa-trash-can text-xl"></i></button>
+                            <button onclick="editTask(${task.id}); event.stopImmediatePropagation()" class="w-10 h-10 flex items-center justify-center text-amber-500 hover:text-amber-700 hover:bg-amber-100 rounded-2xl transition-all"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteTask(${task.id}); event.stopImmediatePropagation()" class="w-10 h-10 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-100 rounded-2xl transition-all"><i class="fa-solid fa-trash-can"></i></button>
                         </div>` : ''}
                     </div>
                 </div>`;
@@ -702,7 +680,7 @@
             
             const isLoggedIn = checkPersistentLogin();
             if (!isLoggedIn) {
-                console.log('%c✅ Sistem yüklendi. Admin girişi: hfkysd.53 / 53hy53.1453 (HASH güncellendi)', 'color:#10b981; font-size:13px');
+                console.log('%c✅ H.f Görev Sistemi yüklendi! Admin: hfkysd.53 / 53hy53.1453 (güvenli hash ile)', 'color:#10b981; font-size:13px');
             }
         };
     </script>
