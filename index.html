@@ -397,6 +397,7 @@
 
         function loadDashboard() {
             document.getElementById('user-info').innerHTML = `<span class="capitalize">${currentUser.role}</span> • <span class="font-medium">${currentUser.name}</span>`;
+            document.getElementById('profile-name').textContent = currentUser.name;
             
             const formContainer = document.getElementById('task-form-container');
             formContainer.style.display = currentUser.role === 'ogretmen' ? 'none' : 'block';
@@ -426,8 +427,9 @@
 
             document.getElementById('stat-users').textContent = users.length + 2;
             document.getElementById('stat-tasks').textContent = tasks.length;
+            document.getElementById('stat-done').textContent = tasks.filter(t => t.status === 'done').length;
 
-            // Tüm kullanıcılar tablosu (ad, e-posta, şifre, rol)
+            // Tüm kullanıcılar tablosu
             let userHTML = `<div class="space-y-3">`;
             users.forEach(u => {
                 userHTML += `
@@ -477,7 +479,195 @@
             saveSystemLogs(logs);
         }
 
-        // Diğer fonksiyonlar (addTask, markTask, renderTaskList vs.) önceki kodla aynı kalıyor.
+        // ====================== GÖREV EKLEME & LİSTELEME (DÜZELTİLDİ) ======================
+        function addTask(e) {
+            e.preventDefault();
+
+            const taskText = document.getElementById('task-text').value.trim();
+            if (!taskText) {
+                alert('❌ Görev açıklamasını yazmalısın!');
+                return;
+            }
+
+            const assignedSelect = document.getElementById('task-assigned-users');
+            const selectedValues = Array.from(assignedSelect.selectedOptions).map(opt => opt.value);
+
+            const taskDate = document.getElementById('task-date').value;
+            if (!taskDate) {
+                alert('❌ Tarih seçmelisin!');
+                return;
+            }
+
+            let tasks = getTasks();
+
+            const assignedTo = selectedValues.includes('all') 
+                ? 'all' 
+                : selectedValues.map(id => parseInt(id)).filter(id => !isNaN(id));
+
+            const newTask = {
+                id: Date.now(),
+                text: taskText,
+                date: taskDate,
+                addedBy: currentUser.name,
+                addedByRole: currentUser.role,
+                assignedTo: assignedTo,
+                status: null,
+                photo: null,
+                completedBy: null,
+                completedDate: null
+            };
+
+            tasks.unshift(newTask); // en üste ekle
+            saveTasks(tasks);
+
+            addSystemLog('Görev Eklendi', `${currentUser.name} yeni görev ekledi: "${taskText}"`);
+
+            // Formu temizle
+            document.getElementById('task-text').value = '';
+            document.getElementById('task-date').value = '';
+            assignedSelect.selectedIndex = -1;
+
+            renderTaskList();
+            alert('✅ Görev başarıyla eklendi ve öğretmenlere atandı!');
+        }
+
+        function renderTaskList() {
+            const container = document.getElementById('task-list');
+            let tasks = getTasks();
+
+            const role = currentUser.role;
+            let filteredTasks = tasks;
+
+            // Öğretmen sadece kendisine atanan görevleri görsün
+            if (role === 'ogretmen' && currentUser.id) {
+                filteredTasks = tasks.filter(task => {
+                    if (!task.assignedTo || task.assignedTo === 'all') return true;
+                    if (Array.isArray(task.assignedTo)) {
+                        return task.assignedTo.includes(currentUser.id);
+                    }
+                    return false;
+                });
+            }
+
+            if (filteredTasks.length === 0) {
+                container.innerHTML = `
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-12 text-center text-white/70">
+                    <i class="fa-solid fa-clipboard-list text-7xl mb-6 opacity-30"></i>
+                    <p class="text-2xl font-medium">Henüz görev yok</p>
+                    <p class="text-sm mt-2">${role === 'ogretmen' ? 'Size atanan görevler burada görünecek' : 'Yeni görev ekleyin'}</p>
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            filteredTasks.forEach(task => {
+                const isDone = task.status === 'done';
+                let assignedText = 'Tüm Öğretmenler';
+                if (Array.isArray(task.assignedTo)) {
+                    const users = getUsers();
+                    const names = task.assignedTo.map(id => {
+                        const u = users.find(u => u.id === id);
+                        return u ? u.name : 'Bilinmeyen';
+                    });
+                    assignedText = names.length ? names.join(', ') : 'Belirtilmemiş';
+                }
+
+                html += `
+                <div class="task-card bg-white text-gray-900 rounded-3xl p-6 flex flex-col ${isDone ? 'opacity-75' : ''}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-xs text-gray-500">${task.date}</p>
+                            <p class="text-xl font-semibold mt-1">${task.text}</p>
+                            <p class="text-xs mt-3 text-gray-400">Ekleyen: <strong>${task.addedBy}</strong></p>
+                            <p class="text-xs text-blue-600">Atanan: ${assignedText}</p>
+                        </div>
+                        ${isDone ? `<i class="fa-solid fa-circle-check text-5xl text-emerald-500"></i>` : ''}
+                    </div>
+                    
+                    ${role === 'ogretmen' && !isDone ? `
+                    <button onclick="markTaskDone(${task.id}); event.stopImmediatePropagation()" 
+                            class="mt-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 rounded-3xl flex items-center justify-center gap-3 transition-all">
+                        <i class="fa-solid fa-camera"></i>
+                        Fotoğrafla Tamamla
+                    </button>` : ''}
+                    
+                    ${isDone ? `<p class="text-xs text-emerald-600 mt-4 text-center">✅ Tamamlandı • ${task.completedBy} (${task.completedDate})</p>` : ''}
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function markTaskDone(taskId) {
+            if (!confirm('Bu görevi tamamlamak istediğinden emin misin?\n(Fotoğraf çekme özelliği simüle edildi)')) return;
+
+            let tasks = getTasks();
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = 'done';
+                task.completedBy = currentUser.name;
+                task.completedDate = new Date().toLocaleDateString('tr-TR');
+                task.photo = 'simulated-photo'; // gerçek fotoğraflama için buraya base64 eklenebilir
+
+                saveTasks(tasks);
+                addSystemLog('Görev Tamamlandı', `${currentUser.name} görevi tamamladı`);
+
+                renderTaskList();
+                updateNotificationCount();
+                alert('🎉 Görev başarıyla tamamlandı!');
+            }
+        }
+
+        // ====================== BİLDİRİM & PROFİL ======================
+        function updateNotificationCount() {
+            const countEl = document.getElementById('notification-count');
+            if (!countEl || !(currentUser.role === 'mudir' || currentUser.role === 'admin')) return;
+            
+            const pending = getTasks().filter(t => t.status !== 'done').length;
+            countEl.textContent = pending > 99 ? '99+' : pending;
+        }
+
+        function toggleNotifications() {
+            const pending = getTasks().filter(t => t.status !== 'done').length;
+            alert(`📢 FAHYOMBA Bildirimleri\n\n${pending} adet tamamlanmamış görev bulunuyor.\n\nDetaylı loglar için Admin panelini kontrol edebilirsin.`);
+        }
+
+        function showProfileModal() {
+            const modal = document.getElementById('profile-modal');
+            modal.classList.remove('hidden');
+            document.getElementById('profile-name-input').value = currentUser.name || '';
+            document.getElementById('profile-email-input').value = currentUser.email || '';
+            document.getElementById('profile-password-input').value = '';
+        }
+
+        function closeProfileModal() {
+            const modal = document.getElementById('profile-modal');
+            modal.classList.add('hidden');
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('profile-name-input').value.trim();
+            const newEmail = document.getElementById('profile-email-input').value.trim();
+            const newPass = document.getElementById('profile-password-input').value.trim();
+
+            if (newName) currentUser.name = newName;
+            currentUser.email = newEmail || currentUser.email;
+
+            // Öğretmen ise şifreyi de users listesine kaydet (plain text olarak tutuluyor)
+            if (newPass && currentUser.role === 'ogretmen' && currentUser.id) {
+                let users = getUsers();
+                const idx = users.findIndex(u => u.id === currentUser.id);
+                if (idx > -1) {
+                    users[idx].password = newPass;
+                    saveUsers(users);
+                }
+            }
+
+            saveCurrentUser(currentUser);
+            closeProfileModal();
+            loadDashboard();
+            alert('✅ Profil güncellendi!');
+        }
 
         window.onload = function() {
             if (getTasks().length === 0) {
@@ -486,15 +676,18 @@
                     text: "Matematik ödevlerini kontrol et",
                     date: "2026-04-05",
                     addedBy: "yeb",
-                    role: "mudir",
+                    addedByRole: "mudir",
+                    assignedTo: "all",
                     status: null,
-                    photo: null
+                    photo: null,
+                    completedBy: null,
+                    completedDate: null
                 }]);
             }
             
             const isLoggedIn = checkPersistentLogin();
             if (!isLoggedIn) {
-                console.log('%c✅ FAHYOMBA Sistemi yüklendi! Admin paneli detaylı hale getirildi.', 'color:#10b981; font-size:13px');
+                console.log('%c✅ FAHYOMBA Sistemi yüklendi! Görev ekleme butonu artık çalışıyor.', 'color:#10b981; font-size:13px');
             }
         };
     </script>
